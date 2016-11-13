@@ -12,7 +12,7 @@
       "identifier" : "Coupon",
       "template" : "/coupons/{id}"
     }, {
-      "description" : "+ Attributes (array[Coupon])  ### List all Coupons [GET] Returns a list of your coupons.  + Parameters     + limit (number, optional)          A limit on the number of objects to be returned. Limit can range         between 1 and 100 items.          + Default: `10`  + Response 200 (application/json)     + Attributes (Coupons)  ### Create a Coupon [POST] Creates a new Coupon.  + Attributes (object)     + percent_off: 25 (number)     + redeem_by (number)  + Request (application/json)  + Response 200 (application/json)",
+      "description" : "+ Attributes (array[Coupon])  ### List all Coupons [GET] Returns a list of your coupons.  + Parameters     + limit (number, optional)          A limit on the number of objects to be returned. Limit can range         between 1 and 100 items.          + Default: `10`  + Response 200 (application/json)     + Attributes (Coupons)  ### Create a Coupon [POST] Creates a new Coupon.  + Attributes (object)     + percent_off: 25 (number)     + redeem_by (number)  + Request (application/json)  + Response 200 (application/json)     + Attributes (Coupon)",
       "identifier" : "Coupons",
       "template" : "/coupons{?limit}"
     } ]

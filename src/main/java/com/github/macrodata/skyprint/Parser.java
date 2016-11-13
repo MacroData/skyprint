@@ -12,8 +12,8 @@ class Parser extends AbstractParser {
             push(new RootSection()),
             Optional(MetadataSection(), addAsChild()),
             Optional(OverviewSection(), addAsChild()),
-            ZeroOrMore(GroupSection(), addAsChild()),
-            ZeroOrMore(ResourceSection(), addAsChild())
+            ZeroOrMore(ResourceSection(), addAsChild()),
+            ZeroOrMore(GroupSection(), addAsChild())
         );
     }
 
@@ -82,9 +82,7 @@ class Parser extends AbstractParser {
 
             OneOrMore(
                 TestNotKeyword(),
-                FirstOf(
-                    Sequence(Line(), NewLine()),
-                    EmptyLine())),
+                Any()),
             addDescription(),
             true
         );
@@ -107,9 +105,7 @@ class Parser extends AbstractParser {
 
             OneOrMore(
                 TestNot(FirstOf(GroupNamed(), ResourceNamed())),
-                FirstOf(
-                    Sequence(Line(), NewLine()),
-                    EmptyLine())),
+                Any()),
             addDescription(),
 
             ZeroOrMore(ResourceSection(), addAsChild())
@@ -133,9 +129,7 @@ class Parser extends AbstractParser {
 
             OneOrMore(
                 TestNot(FirstOf(ResourceNamed(), GroupNamed())),
-                FirstOf(
-                    Sequence(Line(), NewLine()),
-                    EmptyLine())),
+                Any()),
             addDescription()
         );
     }

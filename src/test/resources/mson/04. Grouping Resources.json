@@ -13,7 +13,7 @@
       "template" : "/message"
     } ]
   }, {
-    "description" : "Group of all user-related resources.  This is the second group in this blueprint. For now, no resources were defined",
+    "description" : "Group of all user-related resources.  This is the second group in this blueprint. For now, no resources were defined here and as such we will omit it from the next installment of this course.",
     "identifier" : "Users"
   } ]
 }

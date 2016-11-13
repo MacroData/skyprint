@@ -12,7 +12,7 @@
       "identifier" : "Create message",
       "method" : "POST"
     }, {
-      "description" : "Now create a task that you need to do at a later date.  + Request (application/json)          {             \"name\": \"Exercise in gym\",             \"done\": false,             \"type\": \"task\"         }  + Response 201      + Headers",
+      "description" : "Now create a task that you need to do at a later date.  + Request (application/json)          {             \"name\": \"Exercise in gym\",             \"done\": false,             \"type\": \"task\"         }  + Response 201      + Headers              Location: /tasks/1992",
       "identifier" : "Create a new task",
       "method" : "POST"
     } ]

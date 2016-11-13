@@ -13,7 +13,7 @@
     "identifier" : "Retrieve Task",
     "method" : "GET"
   }, {
-    "description" : "+ Parameters     + id (string)",
+    "description" : "+ Parameters     + id (string)  + Response 204",
     "identifier" : "Delete Task",
     "method" : "DELETE"
   } ]
