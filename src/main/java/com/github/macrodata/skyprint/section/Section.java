@@ -2,6 +2,7 @@ package com.github.macrodata.skyprint.section;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.parboiled.trees.TreeNode;
 
 import java.util.ArrayList;
@@ -11,10 +12,16 @@ public class Section implements TreeNode<Section> {
 
     @Getter
     @Setter
-    protected List<Section> children = new ArrayList<>();
+    @JsonIgnore
+    private List<Section> children = new ArrayList<>();
 
     @Getter
     @Setter
-    protected Section parent;
+    @JsonIgnore
+    private Section parent;
+
+    @Getter
+    @Setter
+    private String description;
 
 }

@@ -12,9 +12,11 @@
     <properties>
         <jdk.version>1.8</jdk.version>
         <parboiled.version>1.1.7</parboiled.version>
+        <jackson.version>1.9.13</jackson.version>
         <lombok.version>1.16.10</lombok.version>
         <testng.version>6.8</testng.version>
         <mockito.version>2.2.11</mockito.version>
+        <jsonassert.version>1.4.0</jsonassert.version>
         <compile.plugin.version>3.5.1</compile.plugin.version>
         <lombok.plugin.version>1.16.10.0</lombok.plugin.version>
     </properties>
@@ -24,6 +26,11 @@
             <groupId>org.parboiled</groupId>
             <artifactId>parboiled-java</artifactId>
             <version>${parboiled.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.jackson</groupId>
+            <artifactId>jackson-mapper-asl</artifactId>
+            <version>${jackson.version}</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -41,6 +48,12 @@
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
             <version>${mockito.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.skyscreamer</groupId>
+            <artifactId>jsonassert</artifactId>
+            <version>${jsonassert.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

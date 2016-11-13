@@ -1,8 +1,6 @@
 package com.github.macrodata.skyprint;
 
-import com.github.macrodata.skyprint.section.MetadataSection;
-import com.github.macrodata.skyprint.section.OverviewSection;
-import com.github.macrodata.skyprint.section.RootSection;
+import com.github.macrodata.skyprint.section.*;
 import org.parboiled.Rule;
 import org.parboiled.annotations.BuildParseTree;
 
@@ -14,7 +12,8 @@ class Parser extends AbstractParser {
             push(new RootSection()),
             Optional(MetadataSection(), addAsChild()),
             Optional(OverviewSection(), addAsChild()),
-            ZeroOrMore(Any())
+            ZeroOrMore(GroupSection(), addAsChild()),
+            ZeroOrMore(ResourceSection(), addAsChild())
         );
     }
 
@@ -92,8 +91,72 @@ class Parser extends AbstractParser {
     }
 
     boolean addDescription() {
-        OverviewSection section = (OverviewSection) pop();
+        Section section = pop();
         section.setDescription(match().trim().replace("\n", " "));
+        push(section);
+        return true;
+    }
+
+    //************* Resource group section ****************
+
+    Rule GroupSection() {
+        return Sequence(
+            ZeroOrMore(EmptyLine()),
+
+            NamedSection(Sequence(GroupKeyword(), Identifier(), push(new GroupSection(match().trim())))),
+
+            OneOrMore(
+                TestNot(FirstOf(GroupNamed(), ResourceNamed())),
+                FirstOf(
+                    Sequence(Line(), NewLine()),
+                    EmptyLine())),
+            addDescription(),
+
+            ZeroOrMore(ResourceSection(), addAsChild())
+        );
+    }
+
+
+    //************* Resource section ****************
+
+    Rule ResourceSection() {
+        return Sequence(
+            ZeroOrMore(EmptyLine()),
+
+            Test(ResourceNamed()),
+            push(new ResourceSection()),
+            NamedSection(FirstOf(
+                Sequence(URITemplateKeyword(), addTemplate()),
+                Sequence(Identifier(), addIdentifier(), Ch('['), URITemplateKeyword(), addTemplate(), Ch(']')),
+                Sequence(HTTPMethodKeyword(), addMethod(), OneOrMore(Space()), URITemplateKeyword(), addTemplate()),
+                Sequence(Identifier(), addIdentifier(), Ch('['), HTTPMethodKeyword(), addMethod(), OneOrMore(Space()), URITemplateKeyword(), Ch(']')))),
+
+            OneOrMore(
+                TestNot(FirstOf(ResourceNamed(), GroupNamed())),
+                FirstOf(
+                    Sequence(Line(), NewLine()),
+                    EmptyLine())),
+            addDescription()
+        );
+    }
+
+    boolean addIdentifier() {
+        ResourceSection section = (ResourceSection) pop();
+        section.setIdentifier(match().trim());
+        push(section);
+        return true;
+    }
+
+    boolean addTemplate() {
+        ResourceSection section = (ResourceSection) pop();
+        section.setTemplate(match().trim());
+        push(section);
+        return true;
+    }
+
+    boolean addMethod() {
+        ResourceSection section = (ResourceSection) pop();
+        section.setMethod(match().trim());
         push(section);
         return true;
     }

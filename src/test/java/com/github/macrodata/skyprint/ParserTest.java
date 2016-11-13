@@ -77,7 +77,7 @@ public class ParserTest {
     public Object[][] samplesNamedSection() {
         return new Object[][]{
             {"# /posts/{id}\n", parser.ResourceNamed()},
-            {"# Blog Posts [/posts/{id}]\n", parser.ResourceNamed()},
+            {"## Blog Posts [/posts/{id}]\n", parser.ResourceNamed()},
             {"# GET /posts/{id}\n", parser.ResourceNamed()},
             {"# Blog Posts [GET /posts/{id}]\n", parser.ResourceNamed()},
             {"# Group Blog Posts\n", parser.GroupNamed()},

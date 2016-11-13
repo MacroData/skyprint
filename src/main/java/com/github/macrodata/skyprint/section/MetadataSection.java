@@ -6,9 +6,6 @@ import lombok.experimental.Delegate;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-/**
- * https://apiblueprint.org/documentation/specification.html#def-metadata-section
- */
 @ToString
 public class MetadataSection extends Section implements Map<String, String> {
 
