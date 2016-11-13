@@ -49,4 +49,12 @@ class AbstractParser extends BaseParser<Section> {
         return EMPTY;
     }
 
+    Rule Digit() {
+        return CharRange('0', '9');
+    }
+
+    Rule Letter() {
+        return FirstOf(CharRange('a', 'z'), CharRange('A', 'Z'));
+    }
+
 }
