@@ -8,12 +8,12 @@ import org.parboiled.annotations.SuppressSubnodes;
 
 import java.util.List;
 
-class AbstractParser extends BaseParser<Section> {
+class AbstractParser extends BaseParser<Object> {
 
     boolean addAsChild() {
-        Section parent = peek(1);
+        Section parent = (Section) peek(1);
         List<Section> children = parent.getChildren();
-        Section section = pop();
+        Section section = (Section) pop();
         section.setParent(parent);
         children.add(section);
         return true;

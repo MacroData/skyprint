@@ -69,7 +69,6 @@ public class SkyPrintProcessorTest {
             .writeValueAsString(result.resultValue);
 
         System.out.println(json);
-        save(new File(msonResource), json);
         JSONAssert.assertEquals(mson, json, true);
     }
 

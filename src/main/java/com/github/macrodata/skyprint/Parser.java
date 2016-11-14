@@ -113,7 +113,7 @@ class Parser extends AbstractParser {
     }
 
     boolean addDescription() {
-        Section section = pop();
+        Section section = (Section) pop();
         section.setDescription(match().trim().replace("\n", " "));
         push(section);
         return true;
