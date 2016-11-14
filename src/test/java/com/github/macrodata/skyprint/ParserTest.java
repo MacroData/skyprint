@@ -1,9 +1,6 @@
 package com.github.macrodata.skyprint;
 
-import com.github.macrodata.skyprint.section.AssetSection;
-import com.github.macrodata.skyprint.section.AttributesSection;
-import com.github.macrodata.skyprint.section.MetadataSection;
-import com.github.macrodata.skyprint.section.OverviewSection;
+import com.github.macrodata.skyprint.section.*;
 import org.mockito.Mockito;
 import org.parboiled.Parboiled;
 import org.parboiled.Rule;

@@ -9,21 +9,20 @@ import lombok.ToString;
 @EqualsAndHashCode
 public class Attribute {
 
-  @Setter
-  @Getter
-  private String name;
+    @Setter
+    @Getter
+    private String name;
 
-  @Setter
-  @Getter
-  private String value;
+    @Setter
+    @Getter
+    private String value;
 
-  @Setter
-  @Getter
-  private String type;
+    @Setter
+    @Getter
+    private String type;
 
-  @Setter
-  @Getter
-  private String description;
-
+    @Setter
+    @Getter
+    private String description;
 
 }

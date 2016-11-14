@@ -11,8 +11,4 @@ public class OverviewSection extends Section {
     @Getter
     private String name;
 
-    public OverviewSection(String name) {
-        this.name = name;
-    }
-
 }

@@ -12,15 +12,11 @@ import java.util.List;
 @ToString
 public class AttributesSection extends Section implements List<Attribute> {
 
+    @Delegate
+    private final List<Attribute> attributes = new ArrayList<>();
+
     @Getter
     @Setter
     private String typeDefinition;
-
-    @Delegate
-    private List<Attribute> attributes;
-
-    public AttributesSection() {
-        this.attributes = new ArrayList<>();
-    }
 
 }

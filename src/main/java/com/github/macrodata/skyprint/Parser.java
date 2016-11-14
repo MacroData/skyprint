@@ -102,7 +102,9 @@ class Parser extends AbstractParser {
         return Sequence(
             ZeroOrMore(EmptyLine()),
 
-            NamedSection(Sequence(Line(), push(new OverviewSection(match().trim())))),
+            Test(NamedSection(Line())),
+            push(new OverviewSection()),
+            NamedSection(Sequence(Line(), addNameO())),
 
             OneOrMore(
                 TestNotKeyword(),
@@ -110,6 +112,12 @@ class Parser extends AbstractParser {
             addDescription(),
             true
         );
+    }
+
+    boolean addNameO() {
+        OverviewSection section = (OverviewSection) peek();
+        section.setName(match().trim());
+        return true;
     }
 
     boolean addDescription() {
@@ -125,7 +133,9 @@ class Parser extends AbstractParser {
         return Sequence(
             ZeroOrMore(EmptyLine()),
 
-            NamedSection(Sequence(GroupKeyword(), Identifier(), push(new GroupSection(match().trim())))),
+            Test(NamedSection(Sequence(GroupKeyword(), Identifier()))),
+            push(new GroupSection()),
+            NamedSection(Sequence(GroupKeyword(), Identifier(), addIdentifierGroup())),
 
             OneOrMore(
                 TestNot(FirstOf(GroupNamed(), ResourceNamed())),
@@ -136,6 +146,11 @@ class Parser extends AbstractParser {
         );
     }
 
+    boolean addIdentifierGroup() {
+        GroupSection section = (GroupSection) peek();
+        section.setIdentifier(match().trim());
+        return true;
+    }
 
     //************* Resource section ****************
 
@@ -321,7 +336,7 @@ class Parser extends AbstractParser {
         return true;
     }
 
-    boolean pushAttributeType(){
+    boolean pushAttributeType() {
         Attribute attr = (Attribute) pop();
         attr.setType(match().trim());
         push(attr);

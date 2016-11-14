@@ -16,8 +16,4 @@ public class GroupSection extends Section {
     @Setter
     private String identifier;
 
-    public GroupSection(String identifier) {
-        this.identifier = identifier;
-    }
-
 }

@@ -10,10 +10,6 @@ import java.util.Map;
 public class MetadataSection extends Section implements Map<String, String> {
 
     @Delegate
-    private final Map<String, String> metadata;
-
-    public MetadataSection() {
-        this.metadata = new LinkedHashMap<>();
-    }
+    private final Map<String, String> metadata = new LinkedHashMap<>();
 
 }

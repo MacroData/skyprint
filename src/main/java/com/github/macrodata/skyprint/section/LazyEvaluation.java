@@ -8,18 +8,16 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @AllArgsConstructor(staticName = "of")
-class LazyEvaluation {
+final class LazyEvaluation {
 
     private final Section section;
 
     public <T extends Section> Optional<T> object(Class<T> cls) {
-        return stream(cls)
-            .findFirst();
+        return stream(cls).findFirst();
     }
 
     public <T extends Section> List<T> list(Class<T> cls) {
-        return stream(cls)
-            .collect(Collectors.toList());
+        return stream(cls).collect(Collectors.toList());
     }
 
     private <T> Stream<T> stream(Class<T> cls) {
