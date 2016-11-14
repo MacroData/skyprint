@@ -68,7 +68,6 @@ public class SkyPrintProcessorTest {
         String json = JSON_MAPPER.writerWithDefaultPrettyPrinter()
             .writeValueAsString(result.resultValue);
 
-        System.out.println(json);
         JSONAssert.assertEquals(mson, json, true);
     }
 

@@ -10,6 +10,9 @@ import java.util.List;
 
 public class Section implements TreeNode<Section> {
 
+    @JsonIgnore
+    final LazyEvaluation lazy = LazyEvaluation.of(this);
+
     @Getter
     @Setter
     @JsonIgnore

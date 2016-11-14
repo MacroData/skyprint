@@ -9,6 +9,9 @@ import java.util.List;
 @ToString
 public class ResourceSection extends Section {
 
+    @Getter(lazy = true)
+    private final List<ActionSection> actions = lazy.list(ActionSection.class);
+
     @Getter
     @Setter
     private String identifier;
@@ -20,14 +23,5 @@ public class ResourceSection extends Section {
     @Getter
     @Setter
     private String method;
-
-    @Setter
-    private List<ActionSection> actions;
-
-    public List<ActionSection> getActions() {
-        if (actions == null)
-            setActions(SectionHelper.list(this, ActionSection.class));
-        return actions;
-    }
 
 }

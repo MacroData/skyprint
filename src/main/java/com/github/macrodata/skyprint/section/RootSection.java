@@ -1,59 +1,27 @@
 package com.github.macrodata.skyprint.section;
 
-import lombok.Setter;
+import lombok.Getter;
 import lombok.ToString;
 
-import javax.xml.transform.stream.StreamSource;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Stream;
-
-import static com.github.macrodata.skyprint.section.SectionHelper.*;
 
 @ToString
 public class RootSection extends Section {
 
-    @Setter
-    private Map<String, String> metadata;
+    @Getter(lazy = true)
+    private final Map<String, String> metadata = lazy.object(MetadataSection.class).orElse(null);
 
-    @Setter
-    private String name;
+    @Getter(lazy = true)
+    private final String name = lazy.object(OverviewSection.class).map(OverviewSection::getName).orElse(null);
 
-    @Setter
-    private List<ResourceSection> resources;
+    @Getter(lazy = true)
+    private final String description = lazy.object(OverviewSection.class).map(Section::getDescription).orElse(null);
 
-    @Setter
-    private List<GroupSection> groups;
+    @Getter(lazy = true)
+    private final List<ResourceSection> resources = lazy.list(ResourceSection.class);
 
-    public Map<String, String> getMetadata() {
-        if (metadata == null)
-            lazy(this::setMetadata, get(this, MetadataSection.class));
-        return metadata;
-    }
-
-    public String getName() {
-        if (name == null)
-            lazy(this::setName, get(this, OverviewSection.class).getName());
-        return name;
-    }
-
-    @Override
-    public String getDescription() {
-        if (super.getDescription() == null)
-            lazy(this::setDescription, get(this, OverviewSection.class).getDescription());
-        return super.getDescription();
-    }
-
-    public List<ResourceSection> getResources() {
-        if (resources == null)
-            lazy(this::setResources, list(this, ResourceSection.class));
-        return resources;
-    }
-
-    public List<GroupSection> getGroups() {
-        if (groups == null)
-            lazy(this::setGroups, list(this, GroupSection.class));
-        return groups;
-    }
+    @Getter(lazy = true)
+    private final List<GroupSection> groups = lazy.list(GroupSection.class);
 
 }
