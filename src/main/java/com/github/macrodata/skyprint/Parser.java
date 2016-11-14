@@ -104,27 +104,14 @@ class Parser extends AbstractParser {
 
             Test(NamedSection(Line())),
             push(new OverviewSection()),
-            NamedSection(Sequence(Line(), addNameO())),
+            NamedSection(Sequence(Line(), setField("name"))),
 
             OneOrMore(
                 TestNotKeyword(),
                 Any()),
-            addDescription(),
+            setField(Section.class, "description", match().trim().replace("\n", " ")),
             true
         );
-    }
-
-    boolean addNameO() {
-        OverviewSection section = (OverviewSection) peek();
-        section.setName(match().trim());
-        return true;
-    }
-
-    boolean addDescription() {
-        Section section = (Section) pop();
-        section.setDescription(match().trim().replace("\n", " "));
-        push(section);
-        return true;
     }
 
     //************* Resource group section ****************
@@ -135,21 +122,15 @@ class Parser extends AbstractParser {
 
             Test(NamedSection(Sequence(GroupKeyword(), Identifier()))),
             push(new GroupSection()),
-            NamedSection(Sequence(GroupKeyword(), Identifier(), addIdentifierGroup())),
+            NamedSection(Sequence(GroupKeyword(), Identifier(), setField("identifier"))),
 
             OneOrMore(
                 TestNot(FirstOf(GroupNamed(), ResourceNamed())),
                 Any()),
-            addDescription(),
+            setField(Section.class, "description", match().trim().replace("\n", " ")),
 
             ZeroOrMore(ResourceSection(), addAsChild())
         );
-    }
-
-    boolean addIdentifierGroup() {
-        GroupSection section = (GroupSection) peek();
-        section.setIdentifier(match().trim());
-        return true;
     }
 
     //************* Resource section ****************
@@ -161,40 +142,27 @@ class Parser extends AbstractParser {
             Test(ResourceNamed()),
             push(new ResourceSection()),
             NamedSection(FirstOf(
-                Sequence(URITemplateKeyword(), addTemplate()),
-                Sequence(HTTPMethodKeyword(), addMethod(), OneOrMore(Space()), URITemplateKeyword(), addTemplate()),
-                Sequence(Identifier(), addIdentifier(), Ch('['), URITemplateKeyword(), addTemplate(), Ch(']')),
-                Sequence(Identifier(), addIdentifier(), Ch('['), HTTPMethodKeyword(), addMethod(), OneOrMore(Space()), URITemplateKeyword(), Ch(']')))),
+                Sequence(
+                    URITemplateKeyword(), setField("template")),
+                Sequence(
+                    HTTPMethodKeyword(), setField("method"),
+                    OneOrMore(Space()), URITemplateKeyword(), setField("template")),
+                Sequence(
+                    Identifier(), setField("identifier"),
+                    Ch('['), URITemplateKeyword(), setField("template"), Ch(']')),
+                Sequence(
+                    Identifier(), setField("identifier"),
+                    Ch('['), HTTPMethodKeyword(), setField("method"),
+                    OneOrMore(Space()), URITemplateKeyword(), setField("template"), Ch(']')))),
 
             OneOrMore(
                 TestNot(FirstOf(ResourceNamed(), GroupNamed(), ActionNamed())),
                 Any()),
-            addDescription(),
+            setField(Section.class, "description", match().trim().replace("\n", " ")),
 
             ZeroOrMore(
                 Sequence(ActionSection(), addAsChild()))
         );
-    }
-
-    boolean addIdentifier() {
-        ResourceSection section = (ResourceSection) pop();
-        section.setIdentifier(match().trim());
-        push(section);
-        return true;
-    }
-
-    boolean addTemplate() {
-        ResourceSection section = (ResourceSection) pop();
-        section.setTemplate(match().trim());
-        push(section);
-        return true;
-    }
-
-    boolean addMethod() {
-        ResourceSection section = (ResourceSection) pop();
-        section.setMethod(match().trim());
-        push(section);
-        return true;
     }
 
     //************* Action section ****************
@@ -206,36 +174,21 @@ class Parser extends AbstractParser {
             Test(ActionNamed()),
             push(new ActionSection()),
             NamedSection(FirstOf(
-                Sequence(HTTPMethodKeyword(), addMethodA()),
-                Sequence(Identifier(), addIdentifierA(), Ch('['), HTTPMethodKeyword(), addMethodA(), Ch(']')),
-                Sequence(Identifier(), Ch('['), HTTPMethodKeyword(), addMethodA(), OneOrMore(Space()), URITemplateKeyword(), addTemplateA(), Ch(']')))),
+                Sequence(
+                    HTTPMethodKeyword(), setField("method")),
+                Sequence(
+                    Identifier(), setField("identifier"),
+                    Ch('['), HTTPMethodKeyword(), setField("method"), Ch(']')),
+                Sequence(
+                    Identifier(),
+                    Ch('['), HTTPMethodKeyword(), setField("method"),
+                    OneOrMore(Space()), URITemplateKeyword(), setField("template"), Ch(']')))),
 
             OneOrMore(
                 TestNot(FirstOf(ActionNamed(), ResourceNamed(), GroupNamed())),
                 Any()),
-            addDescription()
+            setField(Section.class, "description", match().trim().replace("\n", " "))
         );
-    }
-
-    boolean addIdentifierA() {
-        ActionSection section = (ActionSection) pop();
-        section.setIdentifier(match().trim());
-        push(section);
-        return true;
-    }
-
-    boolean addTemplateA() {
-        ActionSection section = (ActionSection) pop();
-        section.setTemplate(match().trim());
-        push(section);
-        return true;
-    }
-
-    boolean addMethodA() {
-        ActionSection section = (ActionSection) pop();
-        section.setMethod(match().trim());
-        push(section);
-        return true;
     }
 
     //************* Response Section ****************
@@ -289,7 +242,7 @@ class Parser extends AbstractParser {
 
             NamedSection(Sequence(
                 String("Attributes"),
-                Optional(OneOrMore(Space()), Ch('('), Identifier(), addTypeDefinition(), Ch(')')))),
+                Optional(OneOrMore(Space()), Ch('('), Identifier(), setField("typeDefinition"), Ch(')')))),
 
             OneOrMore(OneOrMore(Space()), NamedSection(Sequence(Attribute(), addAttribute()))) //TODO ###############################
         );
@@ -300,61 +253,26 @@ class Parser extends AbstractParser {
             push(new Attribute()),
             ZeroOrMore(Space()),
             OneOrMore(Letter()),
-            pushAttributeName(),
+            setField("name"),
             Optional(
                 Ch(':'),
                 OneOrMore(Space()),
                 OneOrMore(
                     TestNot(Space()),
                     Any()),
-                pushAttributeValue()),
+                setField("value")),
             ZeroOrMore(Space()),
             Ch('('),
             OneOrMore(TestNot(FirstOf(Space(), Ch(')'))), Any()),
-            pushAttributeType(),
+            setField("type"),
             Ch(')'),
             Optional(
                 OneOrMore(Space()),
                 Ch('-'),
                 OneOrMore(Space()),
                 Line(),
-                pushAttributeDescription())
+                setField("description"))
         );
-    }
-
-    boolean pushAttributeName() {
-        Attribute attr = (Attribute) pop();
-        attr.setName(match().trim());
-        push(attr);
-        return true;
-    }
-
-    boolean pushAttributeValue() {
-        Attribute attr = (Attribute) pop();
-        attr.setValue(match().trim());
-        push(attr);
-        return true;
-    }
-
-    boolean pushAttributeType() {
-        Attribute attr = (Attribute) pop();
-        attr.setType(match().trim());
-        push(attr);
-        return true;
-    }
-
-    boolean pushAttributeDescription() {
-        Attribute attr = (Attribute) pop();
-        attr.setDescription(match().trim());
-        push(attr);
-        return true;
-    }
-
-    boolean addTypeDefinition() {
-        AttributesSection section = (AttributesSection) pop();
-        section.setTypeDefinition(match().trim());
-        push(section);
-        return true;
     }
 
     boolean addAttribute() {
