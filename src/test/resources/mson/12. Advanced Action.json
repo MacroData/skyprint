@@ -1,0 +1,20 @@
+{
+  "description" : "A resource action is – in fact – a state transition. This API example demonstrates an action - state transition - to another resource.  ## API Blueprint + [Previous: Resource Model](11.%20Resource%20Model.md) + [This: Raw API Blueprint](https://raw.github.com/apiaryio/api-blueprint/master/examples/12.%20Advanced%20Action.md) + [Next: Named Endpoints](13.%20Named%20Endpoints.md)",
+  "metadata" : {
+    "FORMAT" : "1A"
+  },
+  "name" : "Advanced Action API",
+  "resources" : [ {
+    "description" : "+ Parameters     + status (string)     + priority (number)  ## List All Tasks [GET]  + Response 200 (application/json)          [             {                 \"id\": 123,                 \"name\": \"Exercise in gym\",                 \"done\": false,                 \"type\": \"task\"             },             {                 \"id\": 124,                 \"name\": \"Shop for groceries\",                 \"done\": true,                 \"type\": \"task\"             }         ]",
+    "identifier" : "Tasks",
+    "template" : "/tasks/tasks{?status,priority}"
+  }, {
+    "description" : "This is a state transition to another resource.  + Parameters     + id (string)  + Response 200 (application/json)          {             \"id\": 123,             \"name\": \"Go to gym\",             \"done\": false,             \"type\": \"task\"         }",
+    "identifier" : "Retrieve Task",
+    "method" : "GET"
+  }, {
+    "description" : "+ Parameters     + id (string)  + Response 204",
+    "identifier" : "Delete Task",
+    "method" : "DELETE"
+  } ]
+}
