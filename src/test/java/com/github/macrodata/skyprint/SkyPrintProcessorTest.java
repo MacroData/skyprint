@@ -68,6 +68,8 @@ public class SkyPrintProcessorTest {
         String json = JSON_MAPPER.writerWithDefaultPrettyPrinter()
             .writeValueAsString(result.resultValue);
 
+        System.out.println(json);
+        save(new File(msonResource), json);
         JSONAssert.assertEquals(mson, json, true);
     }
 
@@ -77,6 +79,12 @@ public class SkyPrintProcessorTest {
         return new BufferedReader(new InputStreamReader(stream))
             .lines()
             .collect(Collectors.joining("\n"));
+    }
+
+    private static void save(File file, String content) throws IOException {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+            writer.write(content);
+        }
     }
 
 }

@@ -4,6 +4,12 @@ import com.github.macrodata.skyprint.section.*;
 import org.parboiled.Rule;
 import org.parboiled.annotations.BuildParseTree;
 
+import java.util.List;
+import java.util.Map;
+import java.util.OptionalInt;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 @BuildParseTree
 class Parser extends AbstractParser {
 
@@ -21,10 +27,20 @@ class Parser extends AbstractParser {
 
     Rule NamedSection(Rule body) {
         return Sequence(
-            FirstOf("######", "#####", "####", "###", "##", "#"),
+            FirstOf(
+                FirstOf("######", "#####", "####", "###", "##", "#"),
+                FirstOf("++++++", "+++++", "++++", "+++", "++", "+")),
             OneOrMore(Space()),
             body,
             NewLine());
+    }
+
+    Rule PayloadSection(Rule body) {
+        return Sequence(
+
+            body,
+            NewLine()
+        );
     }
 
     Rule ResourceNamed() {
@@ -32,6 +48,13 @@ class Parser extends AbstractParser {
             URITemplateKeyword(),
             Sequence(Identifier(), Ch('['), URITemplateKeyword(), Ch(']')),
             Sequence(HTTPMethodKeyword(), OneOrMore(Space()), URITemplateKeyword()),
+            Sequence(Identifier(), Ch('['), HTTPMethodKeyword(), OneOrMore(Space()), URITemplateKeyword(), Ch(']'))));
+    }
+
+    Rule ActionNamed() {
+        return NamedSection(FirstOf(
+            HTTPMethodKeyword(),
+            Sequence(Identifier(), Ch('['), HTTPMethodKeyword(), Ch(']')),
             Sequence(Identifier(), Ch('['), HTTPMethodKeyword(), OneOrMore(Space()), URITemplateKeyword(), Ch(']'))));
     }
 
@@ -65,10 +88,10 @@ class Parser extends AbstractParser {
     }
 
     boolean addPair() {
-        MetadataSection metadata = (MetadataSection) pop();
+        Map<String, String> metadata = (Map<String, String>) pop();
         String[] match = match().split(":", 2);
         metadata.put(match[0].trim(), match[1].trim());
-        push(metadata);
+        push((Section) metadata);
         return true;
     }
 
@@ -128,9 +151,12 @@ class Parser extends AbstractParser {
                 Sequence(Identifier(), addIdentifier(), Ch('['), HTTPMethodKeyword(), addMethod(), OneOrMore(Space()), URITemplateKeyword(), Ch(']')))),
 
             OneOrMore(
-                TestNot(FirstOf(ResourceNamed(), GroupNamed())),
+                TestNot(FirstOf(ResourceNamed(), GroupNamed(), ActionNamed())),
                 Any()),
-            addDescription()
+            addDescription(),
+
+            ZeroOrMore(
+                Sequence(ActionSection(), addAsChild()))
         );
     }
 
@@ -155,12 +181,174 @@ class Parser extends AbstractParser {
         return true;
     }
 
+    //************* Action section ****************
+
+    Rule ActionSection() {
+        return Sequence(
+            ZeroOrMore(EmptyLine()),
+
+            Test(ActionNamed()),
+            push(new ActionSection()),
+            NamedSection(FirstOf(
+                Sequence(HTTPMethodKeyword(), addMethodA()),
+                Sequence(Identifier(), addIdentifierA(), Ch('['), HTTPMethodKeyword(), addMethodA(), Ch(']')),
+                Sequence(Identifier(), Ch('['), HTTPMethodKeyword(), addMethodA(), OneOrMore(Space()), URITemplateKeyword(), addTemplateA(), Ch(']')))),
+
+            OneOrMore(
+                TestNot(FirstOf(ActionNamed(), ResourceNamed(), GroupNamed())),
+                Any()),
+            addDescription()
+        );
+    }
+
+    boolean addIdentifierA() {
+        ActionSection section = (ActionSection) pop();
+        section.setIdentifier(match().trim());
+        push(section);
+        return true;
+    }
+
+    boolean addTemplateA() {
+        ActionSection section = (ActionSection) pop();
+        section.setTemplate(match().trim());
+        push(section);
+        return true;
+    }
+
+    boolean addMethodA() {
+        ActionSection section = (ActionSection) pop();
+        section.setMethod(match().trim());
+        push(section);
+        return true;
+    }
+
+    //************* Response Section ****************
+
+    Rule ResponseSection() {
+        return Sequence(
+            ZeroOrMore(EmptyLine()),
+
+            null
+        );
+    }
+
+    Rule ResponseNamed() {
+        return PayloadSection(FirstOf(
+            HTTPMethodKeyword(),
+            null
+        ));
+    }
+
+    //************* Headers Section ****************
+
+    Rule HeadersNamed() {
+        return NamedSection(String("Headers"));
+    }
+
+    Rule HeadersSection() {
+        return Sequence(
+            ZeroOrMore(EmptyLine()),
+
+            Test(HeadersNamed()), push(new HeadersSection()), HeadersNamed(),
+            EmptyLine(),
+
+            ZeroOrMore(
+                TestNot(EmptyLine()),
+                Pair(Key(), Line()), addPair())
+        );
+    }
+
+    //************* Attributes Section ****************
+
+    Rule AttributesNamed() {
+        return NamedSection(Sequence(
+            String("Attributes"), Optional(OneOrMore(Space()), Ch('('), Identifier(), Ch(')'))));
+    }
+
+    Rule AttributesSection() {
+        return Sequence(
+            ZeroOrMore(EmptyLine()),
+
+            Test(AttributesNamed()), push(new AttributesSection()),
+
+            NamedSection(Sequence(
+                String("Attributes"),
+                Optional(OneOrMore(Space()), Ch('('), Identifier(), addTypeDefinition(), Ch(')')))),
+
+            OneOrMore(OneOrMore(Space()), NamedSection(Sequence(Line(), addAttribute())))
+        );
+    }
+
+    boolean addTypeDefinition() {
+        AttributesSection section = (AttributesSection) pop();
+        section.setTypeDefinition(match().trim());
+        push(section);
+        return true;
+    }
+
+    boolean addAttribute() {
+        List<String> list = (List<String>) pop();
+        list.add(match().trim());
+        push((Section) list);
+        return true;
+    }
+
+    //************* Asset section ****************
+
+    Rule AssertDefinition(Rule keyword) {
+        return NamedSection(keyword);
+    }
+
+    Rule AssertSection(Rule keyword, AssetSection section) {
+        return Sequence(
+            ZeroOrMore(EmptyLine()),
+
+            Test(AssertDefinition(keyword)), push(section),
+            AssertDefinition(keyword),
+
+            EmptyLine(),
+            Optional(CodeBlocks()),
+            OneOrMore(TestNot(CodeBlocks()), Line(), NewLine()), setBody(),
+            Optional(CodeBlocks())
+        );
+    }
+
+    Rule CodeBlocks() {
+        return Sequence(OneOrMore(Space()), String("```"), NewLine());
+    }
+
+    boolean setBody() {
+        AssetSection section = (AssetSection) pop();
+        String match = match();
+        String[] split = match.split("\n");
+        int i = sizeWhitespace(split[0]);
+        String collect = Stream.of(split)
+            .map(s -> s.substring(i, s.length()))
+            .collect(Collectors.joining("\n"));
+        section.setContent(collect);
+        push(section);
+        return true;
+    }
+
+    int sizeWhitespace(String str) {
+        OptionalInt firstNotSpace = str.chars()
+            .filter(c -> c != ' ' && c != '\t')
+            .findFirst();
+        if (firstNotSpace.isPresent())
+            return str.indexOf(firstNotSpace.getAsInt());
+        return 0;
+    }
+
     //************* Keywords ****************
 
     Rule TestNotKeyword() {
         return TestNot(FirstOf(
             GroupNamed(),
             ResourceNamed()));
+    }
+
+    Rule TestKeyword() {
+        return String("<keyword>");
     }
 
     Rule GroupKeyword() {
@@ -189,6 +377,11 @@ class Parser extends AbstractParser {
             OneOrMore(FirstOf(Letter(), Digit(), AnyOf("_%,"))),
             Ch('}')
         );
+    }
+
+    boolean debug() {
+        System.err.println("[DEBUG] " + match());
+        return true;
     }
 
 }

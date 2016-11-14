@@ -1,7 +1,10 @@
 package com.github.macrodata.skyprint;
 
+import com.github.macrodata.skyprint.section.AssetSection;
+import com.github.macrodata.skyprint.section.AttributesSection;
 import com.github.macrodata.skyprint.section.MetadataSection;
 import com.github.macrodata.skyprint.section.OverviewSection;
+import org.mockito.Mockito;
 import org.parboiled.Parboiled;
 import org.parboiled.Rule;
 import org.parboiled.support.ParsingResult;
@@ -12,6 +15,7 @@ import org.testng.annotations.Test;
 
 import java.util.AbstractMap;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -146,6 +150,86 @@ public class ParserTest {
         String result = ParserHelper.match(parser.MultipleVariables(), sample);
 
         Assert.assertEquals(result, sample);
+    }
+
+    @DataProvider
+    public Object[][] samplesHeadersSection() {
+        return new Object[][]{
+            {
+                "+ Headers\n\n" +
+                    "        Accept-Charset: utf-8\n" +
+                    "        Connection: keep-alive\n" +
+                    "        Content-Type: multipart/form-data, boundary=AaB03x\n",
+                map(tuple("Accept-Charset", "utf-8"), tuple("Connection", "keep-alive"),
+                    tuple("Content-Type", "multipart/form-data, boundary=AaB03x"))}
+        };
+    }
+
+    @Test(dataProvider = "samplesHeadersSection")
+    public void testHeadersSection(String sample, Map<String, String> expected) {
+        ParsingResult<?> result = ParserHelper.parse(parser.HeadersSection(), sample);
+
+        Assert.assertEquals(result.resultValue, expected);
+    }
+
+    @DataProvider
+    public Object[][] samplesAttributesSection() {
+        return new Object[][]{
+            {
+                "+ Attributes (object)\n" +
+                    "    + id (number)\n" +
+                    "    + message (string) - The blog post article\n" +
+                    "    + author: john@appleseed.com (string) - Author of the blog post\n",
+                "object",
+                Arrays.asList(
+                    "id (number)",
+                    "message (string) - The blog post article",
+                    "author: john@appleseed.com (string) - Author of the blog post")}
+        };
+    }
+
+    @Test(dataProvider = "samplesAttributesSection")
+    public void testsAttributesSection(String sample, String typeDefinition, List<String> attributes) {
+        ParsingResult<?> result = ParserHelper.parse(parser.AttributesSection(), sample);
+
+        AttributesSection section = (AttributesSection) result.resultValue;
+        Assert.assertNotNull(section);
+        Assert.assertEquals(section, attributes);
+        Assert.assertEquals(section.getTypeDefinition(), typeDefinition);
+    }
+
+    @DataProvider
+    public Object[][] samplesAssertSection() {
+        return new Object[][]{
+            {
+                "+ <keyword>\n" +
+                    "\n" +
+                    "        {\n" +
+                    "            \"message\": \"Hello\"\n" +
+                    "        }\n",
+                "{\n    \"message\": \"Hello\"\n}"},
+            {
+                "+ <keyword>\n" +
+                    "\n" +
+                    "    ```\n" +
+                    "    {\n" +
+                    "        \"message\": \"Hello\"\n" +
+                    "    }\n" +
+                    "    ```\n",
+                "{\n    \"message\": \"Hello\"\n}"}
+        };
+    }
+
+    @Test(dataProvider = "samplesAssertSection")
+    public void testAssertSection(String sample, String expected) {
+        AssetSection spyAssetSection = Mockito.spy(AssetSection.class);
+
+        ParsingResult<?> result = ParserHelper.parse(
+            parser.AssertSection(parser.TestKeyword(), spyAssetSection), sample);
+
+        AssetSection section = (AssetSection) result.resultValue;
+        Assert.assertNotNull(section);
+        Assert.assertEquals(section.getContent(), expected);
     }
 
     @SafeVarargs

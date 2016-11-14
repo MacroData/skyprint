@@ -8,9 +8,18 @@
     "description" : "Group of all messages-related resources.  This is the first group of resources in this document. It is **recognized** by the **keyword `group`** and its name is `Messages`.  Any following resource definition is considered to be a part of this group until another group is defined. It is **customary** to increase header level of resources (and actions) nested under a resource.",
     "identifier" : "Messages",
     "resources" : [ {
-      "description" : "### Retrieve a Message [GET]  + Response 200 (text/plain)          Hello World!  ### Update a Message [PUT]  + Request (text/plain)          All your base are belong to us.  + Response 204",
+      "description" : "",
       "identifier" : "My Message",
-      "template" : "/message"
+      "template" : "/message",
+      "actions" : [ {
+        "description" : "+ Response 200 (text/plain)          Hello World!",
+        "identifier" : "Retrieve a Message",
+        "method" : "GET"
+      }, {
+        "description" : "+ Request (text/plain)          All your base are belong to us.  + Response 204",
+        "identifier" : "Update a Message",
+        "method" : "PUT"
+      } ]
     } ]
   }, {
     "description" : "Group of all user-related resources.  This is the second group in this blueprint. For now, no resources were defined here and as such we will omit it from the next installment of this course.",

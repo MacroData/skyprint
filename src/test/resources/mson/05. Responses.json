@@ -8,9 +8,18 @@
     "description" : "Group of all messages-related resources.",
     "identifier" : "Messages",
     "resources" : [ {
-      "description" : "### Retrieve a Message [GET] This action has **two** responses defined: One returning plain text and the other a JSON representation of our resource. Both have the same HTTP status code. Also both responses bear additional information in the form of a custom HTTP header. Note that both responses have set the `Content-Type` HTTP header just by specifying `(text/plain)` or `(application/json)` in their respective signatures.  + Response 200 (text/plain)      + Headers              X-My-Message-Header: 42      + Body              Hello World!  + Response 200 (application/json)      + Headers              X-My-Message-Header: 42      + Body              { \"message\": \"Hello World!\" }  ### Update a Message [PUT]  + Request (text/plain)          All your base are belong to us.  + Response 204",
+      "description" : "",
       "identifier" : "My Message",
-      "template" : "/message"
+      "template" : "/message",
+      "actions" : [ {
+        "description" : "This action has **two** responses defined: One returning plain text and the other a JSON representation of our resource. Both have the same HTTP status code. Also both responses bear additional information in the form of a custom HTTP header. Note that both responses have set the `Content-Type` HTTP header just by specifying `(text/plain)` or `(application/json)` in their respective signatures.  + Response 200 (text/plain)      + Headers              X-My-Message-Header: 42      + Body              Hello World!  + Response 200 (application/json)      + Headers              X-My-Message-Header: 42      + Body              { \"message\": \"Hello World!\" }",
+        "identifier" : "Retrieve a Message",
+        "method" : "GET"
+      }, {
+        "description" : "+ Request (text/plain)          All your base are belong to us.  + Response 204",
+        "identifier" : "Update a Message",
+        "method" : "PUT"
+      } ]
     } ]
   } ]
 }

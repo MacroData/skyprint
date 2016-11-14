@@ -8,9 +8,18 @@
     "description" : "Group of all messages-related resources.",
     "identifier" : "Messages",
     "resources" : [ {
-      "description" : "+ Model (application/vnd.siren+json)      This is the `application/vnd.siren+json` message resource representation.      + Headers              Location: http://api.acme.com/message      + Body              {               \"class\": [ \"message\" ],               \"properties\": {                     \"message\": \"Hello World!\"               },               \"links\": [                     { \"rel\": \"self\" , \"href\": \"/message\" }               ]             }  ### Retrieve a Message [GET] At this point we will utilize our `Message` resource model and reference it in `Response 200`.  + Response 200      [My Message][]  ### Update a Message [PUT]  + Request Update Plain Text Message (text/plain)          All your base are belong to us.  + Request Update JSON Message (application/json)          { \"message\": \"All your base are belong to us.\" }  + Response 204",
+      "description" : "+ Model (application/vnd.siren+json)      This is the `application/vnd.siren+json` message resource representation.      + Headers              Location: http://api.acme.com/message      + Body              {               \"class\": [ \"message\" ],               \"properties\": {                     \"message\": \"Hello World!\"               },               \"links\": [                     { \"rel\": \"self\" , \"href\": \"/message\" }               ]             }",
       "identifier" : "My Message",
-      "template" : "/message"
+      "template" : "/message",
+      "actions" : [ {
+        "description" : "At this point we will utilize our `Message` resource model and reference it in `Response 200`.  + Response 200      [My Message][]",
+        "identifier" : "Retrieve a Message",
+        "method" : "GET"
+      }, {
+        "description" : "+ Request Update Plain Text Message (text/plain)          All your base are belong to us.  + Request Update JSON Message (application/json)          { \"message\": \"All your base are belong to us.\" }  + Response 204",
+        "identifier" : "Update a Message",
+        "method" : "PUT"
+      } ]
     } ]
   } ]
 }

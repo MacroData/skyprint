@@ -9,7 +9,7 @@ import java.util.Map;
 @ToString
 public class MetadataSection extends Section implements Map<String, String> {
 
-    @Delegate()
+    @Delegate
     private final Map<String, String> metadata;
 
     public MetadataSection() {
