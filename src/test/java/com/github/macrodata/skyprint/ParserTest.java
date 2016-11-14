@@ -24,6 +24,25 @@ public class ParserTest {
 
     private Parser parser;
 
+    @SafeVarargs
+    private static Map<String, String> map(Map.Entry<String, String>... tuples) {
+        return Arrays.stream(tuples)
+            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+    }
+
+    private static Map.Entry<String, String> tuple(String key, String value) {
+        return new AbstractMap.SimpleImmutableEntry<>(key, value);
+    }
+
+    private static Attribute attribute(String name, String value, String type, String description) {
+        Attribute attribute = new Attribute();
+        attribute.setName(name);
+        attribute.setValue(value);
+        attribute.setType(type);
+        attribute.setDescription(description);
+        return attribute;
+    }
+
     @BeforeClass
     public void setUp() {
         parser = Parboiled.createParser(Parser.class);
@@ -182,14 +201,15 @@ public class ParserTest {
                     "    + author: john@appleseed.com (string) - Author of the blog post\n",
                 "object",
                 Arrays.asList(
-                    "id (number)",
-                    "message (string) - The blog post article",
-                    "author: john@appleseed.com (string) - Author of the blog post")}
+                    attribute("id", null, "number", null),
+                    attribute("message", null, "string", "The blog post article"),
+                    attribute("author", "john@appleseed.com", "string", "Author of the blog post"))
+            }
         };
     }
 
     @Test(dataProvider = "samplesAttributesSection")
-    public void testsAttributesSection(String sample, String typeDefinition, List<String> attributes) {
+    public void testsAttributesSection(String sample, String typeDefinition, List<Attribute> attributes) {
         ParsingResult<?> result = ParserHelper.parse(parser.AttributesSection(), sample);
 
         AttributesSection section = (AttributesSection) result.resultValue;
@@ -230,16 +250,6 @@ public class ParserTest {
         AssetSection section = (AssetSection) result.resultValue;
         Assert.assertNotNull(section);
         Assert.assertEquals(section.getContent(), expected);
-    }
-
-    @SafeVarargs
-    private static Map<String, String> map(Map.Entry<String, String>... tuples) {
-        return Arrays.stream(tuples)
-            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-    }
-
-    private static Map.Entry<String, String> tuple(String key, String value) {
-        return new AbstractMap.SimpleImmutableEntry<>(key, value);
     }
 
 }

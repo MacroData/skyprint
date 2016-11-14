@@ -276,8 +276,63 @@ class Parser extends AbstractParser {
                 String("Attributes"),
                 Optional(OneOrMore(Space()), Ch('('), Identifier(), addTypeDefinition(), Ch(')')))),
 
-            OneOrMore(OneOrMore(Space()), NamedSection(Sequence(Line(), addAttribute())))
+            OneOrMore(OneOrMore(Space()), NamedSection(Sequence(Attribute(), addAttribute()))) //TODO ###############################
         );
+    }
+
+    Rule Attribute() {
+        return Sequence(
+            push(new Attribute()),
+            ZeroOrMore(Space()),
+            OneOrMore(Letter()),
+            pushAttributeName(),
+            Optional(
+                Ch(':'),
+                OneOrMore(Space()),
+                OneOrMore(
+                    TestNot(Space()),
+                    Any()),
+                pushAttributeValue()),
+            ZeroOrMore(Space()),
+            Ch('('),
+            OneOrMore(TestNot(FirstOf(Space(), Ch(')'))), Any()),
+            pushAttributeType(),
+            Ch(')'),
+            Optional(
+                OneOrMore(Space()),
+                Ch('-'),
+                OneOrMore(Space()),
+                Line(),
+                pushAttributeDescription())
+        );
+    }
+
+    boolean pushAttributeName() {
+        Attribute attr = (Attribute) pop();
+        attr.setName(match().trim());
+        push(attr);
+        return true;
+    }
+
+    boolean pushAttributeValue() {
+        Attribute attr = (Attribute) pop();
+        attr.setValue(match().trim());
+        push(attr);
+        return true;
+    }
+
+    boolean pushAttributeType(){
+        Attribute attr = (Attribute) pop();
+        attr.setType(match().trim());
+        push(attr);
+        return true;
+    }
+
+    boolean pushAttributeDescription() {
+        Attribute attr = (Attribute) pop();
+        attr.setDescription(match().trim());
+        push(attr);
+        return true;
     }
 
     boolean addTypeDefinition() {
@@ -288,9 +343,8 @@ class Parser extends AbstractParser {
     }
 
     boolean addAttribute() {
-        List<String> list = (List<String>) pop();
-        list.add(match().trim());
-        push((Section) list);
+        List<Attribute> list = (List<Attribute>) peek(1);
+        list.add((Attribute) pop());
         return true;
     }
 
@@ -380,7 +434,7 @@ class Parser extends AbstractParser {
         );
     }
 
-    boolean debug(Object ... v) {
+    boolean debug(Object... v) {
         System.err.println("[DEBUG] " + match() + " " + Arrays.asList(v));
         return true;
     }
