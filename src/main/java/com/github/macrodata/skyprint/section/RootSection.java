@@ -3,7 +3,10 @@ package com.github.macrodata.skyprint.section;
 import lombok.Setter;
 import lombok.ToString;
 
+import javax.xml.transform.stream.StreamSource;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Stream;
 
 import static com.github.macrodata.skyprint.section.SectionHelper.*;
 
@@ -11,7 +14,7 @@ import static com.github.macrodata.skyprint.section.SectionHelper.*;
 public class RootSection extends Section {
 
     @Setter
-    private MetadataSection metadata;
+    private Map<String, String> metadata;
 
     @Setter
     private String name;
@@ -22,7 +25,7 @@ public class RootSection extends Section {
     @Setter
     private List<GroupSection> groups;
 
-    public MetadataSection getMetadata() {
+    public Map<String, String> getMetadata() {
         if (metadata == null)
             lazy(this::setMetadata, get(this, MetadataSection.class));
         return metadata;
