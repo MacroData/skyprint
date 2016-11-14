@@ -1,7 +1,6 @@
 package com.github.macrodata.skyprint.section;
 
 import lombok.Getter;
-import lombok.Setter;
 import lombok.ToString;
 
 import java.util.List;
@@ -13,15 +12,15 @@ public class ResourceSection extends Section {
     private final List<ActionSection> actions = lazy.list(ActionSection.class);
 
     @Getter
-    @Setter
     private String identifier;
 
     @Getter
-    @Setter
     private String template;
 
     @Getter
-    @Setter
     private String method;
+
+    @Getter
+    private String description;
 
 }

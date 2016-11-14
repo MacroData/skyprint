@@ -16,7 +16,7 @@ public class RootSection extends Section {
     private final String name = lazy.object(OverviewSection.class).map(OverviewSection::getName).orElse(null);
 
     @Getter(lazy = true)
-    private final String description = lazy.object(OverviewSection.class).map(Section::getDescription).orElse(null);
+    private final String description = lazy.object(OverviewSection.class).map(OverviewSection::getDescription).orElse(null);
 
     @Getter(lazy = true)
     private final List<ResourceSection> resources = lazy.list(ResourceSection.class);

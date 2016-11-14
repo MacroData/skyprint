@@ -109,7 +109,7 @@ class Parser extends AbstractParser {
             OneOrMore(
                 TestNotKeyword(),
                 Any()),
-            setField(Section.class, "description", match().trim().replace("\n", " ")),
+            setField("description", match().trim().replace("\n", " ")),
             true
         );
     }
@@ -127,7 +127,7 @@ class Parser extends AbstractParser {
             OneOrMore(
                 TestNot(FirstOf(GroupNamed(), ResourceNamed())),
                 Any()),
-            setField(Section.class, "description", match().trim().replace("\n", " ")),
+            setField("description", match().trim().replace("\n", " ")),
 
             ZeroOrMore(ResourceSection(), addAsChild())
         );
@@ -158,7 +158,7 @@ class Parser extends AbstractParser {
             OneOrMore(
                 TestNot(FirstOf(ResourceNamed(), GroupNamed(), ActionNamed())),
                 Any()),
-            setField(Section.class, "description", match().trim().replace("\n", " ")),
+            setField("description", match().trim().replace("\n", " ")),
 
             ZeroOrMore(
                 Sequence(ActionSection(), addAsChild()))
@@ -187,7 +187,7 @@ class Parser extends AbstractParser {
             OneOrMore(
                 TestNot(FirstOf(ActionNamed(), ResourceNamed(), GroupNamed())),
                 Any()),
-            setField(Section.class, "description", match().trim().replace("\n", " "))
+            setField("description", match().trim().replace("\n", " "))
         );
     }
 

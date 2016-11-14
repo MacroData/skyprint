@@ -23,9 +23,4 @@ public class Section implements TreeNode<Section> {
     @JsonIgnore
     private Section parent;
 
-    // TODO: remove from here
-    @Getter
-    @Setter
-    private String description;
-
 }
