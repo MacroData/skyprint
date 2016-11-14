@@ -4,6 +4,7 @@ import com.github.macrodata.skyprint.section.*;
 import org.parboiled.Rule;
 import org.parboiled.annotations.BuildParseTree;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.OptionalInt;
@@ -146,8 +147,8 @@ class Parser extends AbstractParser {
             push(new ResourceSection()),
             NamedSection(FirstOf(
                 Sequence(URITemplateKeyword(), addTemplate()),
-                Sequence(Identifier(), addIdentifier(), Ch('['), URITemplateKeyword(), addTemplate(), Ch(']')),
                 Sequence(HTTPMethodKeyword(), addMethod(), OneOrMore(Space()), URITemplateKeyword(), addTemplate()),
+                Sequence(Identifier(), addIdentifier(), Ch('['), URITemplateKeyword(), addTemplate(), Ch(']')),
                 Sequence(Identifier(), addIdentifier(), Ch('['), HTTPMethodKeyword(), addMethod(), OneOrMore(Space()), URITemplateKeyword(), Ch(']')))),
 
             OneOrMore(
@@ -379,8 +380,8 @@ class Parser extends AbstractParser {
         );
     }
 
-    boolean debug() {
-        System.err.println("[DEBUG] " + match());
+    boolean debug(Object ... v) {
+        System.err.println("[DEBUG] " + match() + " " + Arrays.asList(v));
         return true;
     }
 
