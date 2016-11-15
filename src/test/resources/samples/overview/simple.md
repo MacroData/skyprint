@@ -1,0 +1,5 @@
+# The Simplest API
+This is one of the simplest APIs written in the **API Blueprint**.
+
+## API Blueprint
++ [Next: Resource and Actions](02.%20Resource%20and%20Actions.md)
