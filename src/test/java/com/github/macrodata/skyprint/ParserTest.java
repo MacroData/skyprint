@@ -27,30 +27,6 @@ public class ParserTest {
     }
 
     @DataProvider
-    public Object[][] samplesMetadataSection() {
-        return new Object[][]{
-            {
-                "FORMAT: 1A\n",
-                map(tuple("FORMAT", "1A"))},
-            {
-                "FORMAT: 1A\nHOST: https://alpha-api.app.net\n\nDescription",
-                map(tuple("FORMAT", "1A"), tuple("HOST", "https://alpha-api.app.net"))},
-            {
-                "FORMAT: 1A\nHOST: https://alpha-api.app.net\nORGANIZATION: MacroData\nDescription",
-                map(tuple("FORMAT", "1A"), tuple("HOST", "https://alpha-api.app.net"), tuple("ORGANIZATION", "MacroData"))}
-        };
-    }
-
-    @Test(dataProvider = "samplesMetadataSection")
-    public void testMetadataSection(String sample, Map<String, String> expected) {
-        ParsingResult<?> result = TestHelper.parse(parser.MetadataSection(), sample);
-
-        MetadataSection section = (MetadataSection) result.resultValue;
-        Assert.assertNotNull(section);
-        Assert.assertEquals(section, expected);
-    }
-
-    @DataProvider
     public Object[][] samplesOverviewSection() {
         return new Object[][]{
             {
