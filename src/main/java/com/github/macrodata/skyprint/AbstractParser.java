@@ -8,6 +8,7 @@ import org.parboiled.annotations.SuppressSubnodes;
 
 import java.lang.reflect.Field;
 import java.util.List;
+import java.util.Map;
 
 class AbstractParser extends BaseParser<Object> {
 
@@ -19,6 +20,34 @@ class AbstractParser extends BaseParser<Object> {
         children.add(section);
         return true;
     }
+
+    //************* Map ****************
+
+    boolean addToMap() {
+        Object value = pop();
+        Object key = pop();
+        Map map = (Map) peek();
+        map.put(key, value);
+        return true;
+    }
+
+    Rule Pair(Rule key, Rule value) {
+        return Sequence(key, Ch(':'), value, NewLine());
+    }
+
+    Rule MapKey() {
+        return OneOrMore(TestNot(FirstOf(Ch(':'), NewLine())), Any());
+    }
+
+    Rule MapValue() {
+        return Line();
+    }
+
+    boolean push() {
+        return push(match().trim());
+    }
+
+    //************* Fields ****************
 
     boolean setField(String fieldName) {
         return setField(peek().getClass(), fieldName, match().trim());

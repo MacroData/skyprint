@@ -1,5 +1,6 @@
 package com.github.macrodata.skyprint;
 
+import org.codehaus.jackson.map.ObjectMapper;
 import org.parboiled.Node;
 import org.parboiled.Rule;
 import org.parboiled.buffers.InputBuffer;
@@ -13,30 +14,36 @@ import java.util.stream.Collectors;
 
 final class TestHelper {
 
-    public static String resource(String resource) {
+    private static final ObjectMapper JSON_MAPPER = new ObjectMapper();
+
+    static String resource(String resource) throws IOException {
         InputStream stream = Object.class.getResourceAsStream(resource);
-        if (stream == null) return "";
-        return new BufferedReader(new InputStreamReader(stream))
-            .lines()
-            .collect(Collectors.joining("\n"));
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(stream))) {
+            return reader.lines()
+                .collect(Collectors.joining("\n"));
+        }
     }
 
-    public static String match(Rule rule, String source) {
+    static String match(Rule rule, String source) {
         ParsingResult<Object> result = new ReportingParseRunner<>(rule).run(source);
         InputBuffer buffer = result.inputBuffer;
         Node<Object> node = result.parseTreeRoot;
         return buffer.extract(new IndexRange(node.getStartIndex(), node.getEndIndex()));
     }
 
-    public static ParsingResult<?> parse(Rule rule, String source) {
+    static ParsingResult<?> parse(Rule rule, String source) {
         return new ReportingParseRunner<>(rule).run(source);
     }
 
-    public static void debug(ParsingResult<?> result) {
+    static void debug(ParsingResult<?> result) {
         System.err.println(ParseTreeUtils.printNodeTree(result));
     }
 
-    public static void save(File file, String value) throws IOException {
+    static String toJson(Object obj) throws IOException {
+        return JSON_MAPPER.writeValueAsString(obj);
+    }
+
+    static void save(File file, String value) throws IOException {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
             writer.write(value);
         }
