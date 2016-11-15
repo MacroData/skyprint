@@ -112,11 +112,11 @@ class Parser extends AbstractParser {
             Test(NamedSection(Sequence(GroupKeyword(), Identifier()))),
             push(new GroupSection()),
             NamedSection(Sequence(GroupKeyword(), Identifier(), setField("identifier"))),
-
-            OneOrMore(
-                TestNot(FirstOf(GroupNamed(), ResourceNamed())),
-                Any()),
-            setField("description", match().trim().replace("\n", " ")),
+            Optional(
+                OneOrMore(
+                    TestNot(FirstOf(GroupNamed(), ResourceNamed())),
+                    Any()),
+                setField("description", match().trim().replace("\n", " "))),
 
             ZeroOrMore(ResourceSection(), addAsChild())
         );

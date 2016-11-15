@@ -1,5 +1,6 @@
 package com.github.macrodata.skyprint;
 
+import com.github.macrodata.skyprint.section.GroupSection;
 import com.github.macrodata.skyprint.section.MetadataSection;
 import com.github.macrodata.skyprint.section.OverviewSection;
 import org.json.JSONException;
@@ -59,6 +60,27 @@ public class ParserRulesTest {
         ParsingResult<?> result = TestHelper.parse(parser.OverviewSection(), sample);
 
         OverviewSection section = (OverviewSection) result.resultValue;
+        Assert.assertNotNull(section);
+        JSONAssert.assertEquals(expected, TestHelper.toJson(section), true);
+    }
+
+    @DataProvider
+    public Object[][] samplesGroupSection() {
+        return new Object[][]{
+            {"group/simple"},
+            {"group/without_description"},
+            {"group/full"}
+        };
+    }
+
+    @Test(dataProvider = "samplesGroupSection")
+    public void testGroupSection(String resource) throws IOException, JSONException{
+        String sample = sample(resource + ".md");
+        String expected = expected(resource + ".json");
+
+        ParsingResult<?> result = TestHelper.parse(parser.GroupSection(), sample);
+
+        GroupSection section = (GroupSection) result.resultValue;
         Assert.assertNotNull(section);
         JSONAssert.assertEquals(expected, TestHelper.toJson(section), true);
     }

@@ -1,0 +1,20 @@
+{
+  "identifier": "Messages",
+  "description": "This is the first group of resources in this document. It is **recognized** by the **keyword `group`** and its name is `Messages`.",
+  "resources": [
+    {
+      "identifier": "My Message",
+      "template": "/message",
+      "method": null,
+      "description": "",
+      "actions": [
+        {
+          "identifier": "Retrieve a Message",
+          "template": null,
+          "method": "GET",
+          "description": "This action has **two** responses defined"
+        }
+      ]
+    }
+  ]
+}
