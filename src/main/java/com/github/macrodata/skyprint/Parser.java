@@ -244,7 +244,7 @@ class Parser extends AbstractParser {
                 String("Attributes"),
                 Optional(OneOrMore(Space()), Ch('('), Identifier(), setField("typeDefinition"), Ch(')')))),
 
-            OneOrMore(OneOrMore(Space()), NamedSection(Sequence(Attribute(), addAttribute()))) //TODO ###############################
+            OneOrMore(OneOrMore(Space()), NamedSection(Sequence(Attribute(), addAttribute())))
         );
     }
 
