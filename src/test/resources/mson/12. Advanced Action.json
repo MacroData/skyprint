@@ -5,16 +5,23 @@
   },
   "name" : "Advanced Action API",
   "resources" : [ {
-    "description" : "+ Parameters     + status (string)     + priority (number)  ## List All Tasks [GET]  + Response 200 (application/json)          [             {                 \"id\": 123,                 \"name\": \"Exercise in gym\",                 \"done\": false,                 \"type\": \"task\"             },             {                 \"id\": 124,                 \"name\": \"Shop for groceries\",                 \"done\": true,                 \"type\": \"task\"             }         ]",
+    "description" : "+ Parameters     + status (string)     + priority (number)",
     "identifier" : "Tasks",
-    "template" : "/tasks/tasks{?status,priority}"
-  }, {
-    "description" : "This is a state transition to another resource.  + Parameters     + id (string)  + Response 200 (application/json)          {             \"id\": 123,             \"name\": \"Go to gym\",             \"done\": false,             \"type\": \"task\"         }",
-    "identifier" : "Retrieve Task",
-    "method" : "GET"
-  }, {
-    "description" : "+ Parameters     + id (string)  + Response 204",
-    "identifier" : "Delete Task",
-    "method" : "DELETE"
+    "template" : "/tasks/tasks{?status,priority}",
+    "actions" : [ {
+      "description" : "+ Response 200 (application/json)          [             {                 \"id\": 123,                 \"name\": \"Exercise in gym\",                 \"done\": false,                 \"type\": \"task\"             },             {                 \"id\": 124,                 \"name\": \"Shop for groceries\",                 \"done\": true,                 \"type\": \"task\"             }         ]",
+      "identifier" : "List All Tasks",
+      "method" : "GET"
+    }, {
+      "description" : "This is a state transition to another resource.  + Parameters     + id (string)  + Response 200 (application/json)          {             \"id\": 123,             \"name\": \"Go to gym\",             \"done\": false,             \"type\": \"task\"         }",
+      "identifier" : "Retrieve Task",
+      "template" : "/task/{id}",
+      "method" : "GET"
+    }, {
+      "description" : "+ Parameters     + id (string)  + Response 204",
+      "identifier" : "Delete Task",
+      "template" : "/task/{id}",
+      "method" : "DELETE"
+    } ]
   } ]
 }

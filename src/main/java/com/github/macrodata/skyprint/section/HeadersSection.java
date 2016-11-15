@@ -7,9 +7,9 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 @ToString
-public class MetadataSection extends Section implements Map<String, String> {
+public class HeadersSection extends Section implements Map<String, String> {
 
     @Delegate
-    private final Map<String, String> metadata = new LinkedHashMap<>();
+    private final Map<String, String> headers = new LinkedHashMap<>();
 
 }

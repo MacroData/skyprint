@@ -22,7 +22,7 @@ public class AbstractParserTest {
 
     @Test
     public void testAddAsChild() {
-        Context<Section> mockContext = Mockito.mock(Context.class);
+        Context<Object> mockContext = Mockito.mock(Context.class);
         DefaultValueStack spyStack = Mockito.spy(DefaultValueStack.class);
         Mockito.when(mockContext.getMatcher()).thenReturn(Mockito.mock(Matcher.class));
         Mockito.when(mockContext.getValueStack()).thenReturn(spyStack);

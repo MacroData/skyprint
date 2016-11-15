@@ -8,7 +8,6 @@
   "resources": [
     {
       "description": "+ Response 200 (text/plain)          Hello World!",
-      "identifier": "GET /message",
       "template": "/message",
       "method": "GET"
     }

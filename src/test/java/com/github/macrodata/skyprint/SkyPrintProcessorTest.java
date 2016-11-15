@@ -79,4 +79,10 @@ public class SkyPrintProcessorTest {
             .collect(Collectors.joining("\n"));
     }
 
+    private static void save(File file, String content) throws IOException {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+            writer.write(content);
+        }
+    }
+
 }

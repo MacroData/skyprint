@@ -6,16 +6,37 @@ import org.parboiled.Rule;
 import org.parboiled.annotations.SuppressNode;
 import org.parboiled.annotations.SuppressSubnodes;
 
+import java.lang.reflect.Field;
 import java.util.List;
 
-class AbstractParser extends BaseParser<Section> {
+class AbstractParser extends BaseParser<Object> {
 
     boolean addAsChild() {
-        Section parent = peek(1);
+        Section parent = (Section) peek(1);
         List<Section> children = parent.getChildren();
-        Section section = pop();
+        Section section = (Section) pop();
         section.setParent(parent);
         children.add(section);
+        return true;
+    }
+
+    boolean setField(String fieldName) {
+        return setField(peek().getClass(), fieldName, match().trim());
+    }
+
+    boolean setField(String fieldName, String value) {
+        return setField(peek().getClass(), fieldName, value);
+    }
+
+    boolean setField(Class cls, String fieldName, String value) {
+        final Object obj = peek();
+        try {
+            Field field = cls.getDeclaredField(fieldName);
+            field.setAccessible(true);
+            field.set(obj, value);
+        } catch (IllegalAccessException | NoSuchFieldException e) {
+            throw new RuntimeException(e);
+        }
         return true;
     }
 
