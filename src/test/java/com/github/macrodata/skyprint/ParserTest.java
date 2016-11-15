@@ -21,25 +21,6 @@ public class ParserTest {
 
     private Parser parser;
 
-    @SafeVarargs
-    private static Map<String, String> map(Map.Entry<String, String>... tuples) {
-        return Arrays.stream(tuples)
-            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-    }
-
-    private static Map.Entry<String, String> tuple(String key, String value) {
-        return new AbstractMap.SimpleImmutableEntry<>(key, value);
-    }
-
-    private static Attribute attribute(String name, String value, String type, String description) {
-        Attribute attribute = new Attribute();
-        attribute.setName(name);
-        attribute.setValue(value);
-        attribute.setType(type);
-        attribute.setDescription(description);
-        return attribute;
-    }
-
     @BeforeClass
     public void setUp() {
         parser = Parboiled.createParser(Parser.class);
@@ -62,7 +43,7 @@ public class ParserTest {
 
     @Test(dataProvider = "samplesMetadataSection")
     public void testMetadataSection(String sample, Map<String, String> expected) {
-        ParsingResult<?> result = ParserHelper.parse(parser.MetadataSection(), sample);
+        ParsingResult<?> result = TestHelper.parse(parser.MetadataSection(), sample);
 
         MetadataSection section = (MetadataSection) result.resultValue;
         Assert.assertNotNull(section);
@@ -85,7 +66,7 @@ public class ParserTest {
 
     @Test(dataProvider = "samplesOverviewSection")
     public void testOverviewSection(String sample, Pattern namePattern, Pattern descriptionPattern) {
-        ParsingResult<?> result = ParserHelper.parse(parser.OverviewSection(), sample);
+        ParsingResult<?> result = TestHelper.parse(parser.OverviewSection(), sample);
 
         OverviewSection section = (OverviewSection) result.resultValue;
         Assert.assertNotNull(section);
@@ -107,7 +88,7 @@ public class ParserTest {
 
     @Test(dataProvider = "samplesNamedSection")
     public void testResourceNamed(String sample, Rule rule) {
-        String result = ParserHelper.match(rule, sample);
+        String result = TestHelper.match(rule, sample);
 
         Assert.assertEquals(sample, result);
     }
@@ -125,7 +106,7 @@ public class ParserTest {
 
     @Test(dataProvider = "samplesIdentifier")
     public void testIdentifier(String sample, boolean expected) {
-        String result = ParserHelper.match(parser.Identifier(), sample);
+        String result = TestHelper.match(parser.Identifier(), sample);
 
         Assert.assertEquals(sample.equals(result), expected);
     }
@@ -142,7 +123,7 @@ public class ParserTest {
 
     @Test(dataProvider = "samplesURITemplate")
     public void testURITemplate(String sample) {
-        String result = ParserHelper.match(parser.URITemplateKeyword(), sample);
+        String result = TestHelper.match(parser.URITemplateKeyword(), sample);
 
         Assert.assertEquals(result, sample);
     }
@@ -163,7 +144,7 @@ public class ParserTest {
 
     @Test(dataProvider = "samplesMultipleVariables")
     public void testMultipleVariables(String sample) {
-        String result = ParserHelper.match(parser.MultipleVariables(), sample);
+        String result = TestHelper.match(parser.MultipleVariables(), sample);
 
         Assert.assertEquals(result, sample);
     }
@@ -183,7 +164,7 @@ public class ParserTest {
 
     @Test(dataProvider = "samplesHeadersSection")
     public void testHeadersSection(String sample, Map<String, String> expected) {
-        ParsingResult<?> result = ParserHelper.parse(parser.HeadersSection(), sample);
+        ParsingResult<?> result = TestHelper.parse(parser.HeadersSection(), sample);
 
         Assert.assertEquals(result.resultValue, expected);
     }
@@ -207,7 +188,7 @@ public class ParserTest {
 
     @Test(dataProvider = "samplesAttributesSection")
     public void testsAttributesSection(String sample, String typeDefinition, List<Attribute> attributes) {
-        ParsingResult<?> result = ParserHelper.parse(parser.AttributesSection(), sample);
+        ParsingResult<?> result = TestHelper.parse(parser.AttributesSection(), sample);
 
         AttributesSection section = (AttributesSection) result.resultValue;
         Assert.assertNotNull(section);
@@ -241,12 +222,71 @@ public class ParserTest {
     public void testAssertSection(String sample, String expected) {
         AssetSection spyAssetSection = Mockito.spy(AssetSection.class);
 
-        ParsingResult<?> result = ParserHelper.parse(
+        ParsingResult<?> result = TestHelper.parse(
             parser.AssertSection(parser.TestKeyword(), spyAssetSection), sample);
 
         AssetSection section = (AssetSection) result.resultValue;
         Assert.assertNotNull(section);
         Assert.assertEquals(section.getContent(), expected);
+    }
+
+    @DataProvider
+    public Object[][] sampleBodySection() {
+        return new Object[][]{
+            {"      + Body\n" +
+                "\n" +
+                "           {\n" +
+                "               \"message\": \"Hello\"\n" +
+                "           }\n", "{\n    \"message\": \"Hello\"\n}"}
+        };
+    }
+
+    @Test(dataProvider = "sampleBodySection")
+    public void testBodySection(String sample, String expected) {
+        ParsingResult<?> result = TestHelper.parse(parser.BodySection(), sample);
+
+        BodySection section = (BodySection) result.resultValue;
+        Assert.assertNotNull(section);
+        Assert.assertEquals(section.getContent(), expected);
+    }
+
+    @DataProvider
+    public Object[][] sampleSchemaSection() {
+        return new Object[][]{
+            {"      + Schema\n" +
+                "\n" +
+                "           {\n" +
+                "               \"message\": \"Hello\"\n" +
+                "           }\n", "{\n    \"message\": \"Hello\"\n}"}
+        };
+    }
+
+    @Test(dataProvider = "sampleSchemaSection")
+    public void testSchemaSection(String sample, String expected) {
+        ParsingResult<?> result = TestHelper.parse(parser.SchemaSection(), sample);
+
+        SchemaSection section = (SchemaSection) result.resultValue;
+        Assert.assertNotNull(section);
+        Assert.assertEquals(section.getContent(), expected);
+    }
+
+    @SafeVarargs
+    private static Map<String, String> map(Map.Entry<String, String>... tuples) {
+        return Arrays.stream(tuples)
+            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+    }
+
+    private static Map.Entry<String, String> tuple(String key, String value) {
+        return new AbstractMap.SimpleImmutableEntry<>(key, value);
+    }
+
+    private static Attribute attribute(String name, String value, String type, String description) {
+        Attribute attribute = new Attribute();
+        attribute.setName(name);
+        attribute.setValue(value);
+        attribute.setType(type);
+        attribute.setDescription(description);
+        return attribute;
     }
 
 }
