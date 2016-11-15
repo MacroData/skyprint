@@ -6,7 +6,7 @@ import lombok.Getter;
 import java.util.List;
 import java.util.Map;
 
-public abstract class PayloadSection extends Section {
+public abstract class PayloadSection extends AssetSection {
 
     @Getter(lazy = true)
     private final Map<String, String> headers = lazy.object(HeadersSection.class).orElse(null);

@@ -10,6 +10,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
+import java.io.IOException;
 import java.util.AbstractMap;
 import java.util.Arrays;
 import java.util.List;
@@ -244,6 +245,14 @@ public class ParserTest {
         SchemaSection section = (SchemaSection) result.resultValue;
         Assert.assertNotNull(section);
         Assert.assertEquals(section.getContent(), expected);
+    }
+
+    @Test
+    public void testA() throws IOException {
+        String resource = TestHelper.resource("/samples/responce/empty.md");
+        ParsingResult<?> result = TestHelper.parse(parser.ResponseSection(), resource);
+        String s = TestHelper.toJson(result.resultValue);
+        System.out.println(s);
     }
 
     @SafeVarargs

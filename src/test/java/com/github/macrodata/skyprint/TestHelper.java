@@ -40,7 +40,7 @@ final class TestHelper {
     }
 
     static String toJson(Object obj) throws IOException {
-        return JSON_MAPPER.writeValueAsString(obj);
+        return JSON_MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(obj);
     }
 
     static void save(File file, String value) throws IOException {

@@ -3,6 +3,9 @@ package com.github.macrodata.skyprint;
 import com.github.macrodata.skyprint.section.*;
 import org.parboiled.Rule;
 import org.parboiled.annotations.BuildParseTree;
+import org.parboiled.annotations.Cached;
+import org.parboiled.annotations.Label;
+import org.parboiled.annotations.MemoMismatches;
 
 import java.util.Arrays;
 import java.util.List;
@@ -55,10 +58,31 @@ class Parser extends AbstractParser {
 
     Rule PayloadSection(Rule body) {
         return Sequence(
+            NamedSection(body),
 
-            body,
-            NewLine()
+            ZeroOrMore(EmptyLine()),
+
+            FirstOf(Sequence(
+                Test(FirstOf(HeadersSection(), AttributesSection(), BodySection(), SchemaKeyword())),
+                Optional(HeadersSection(), addAsChild()),
+                ZeroOrMore(Space()),
+                Optional(AttributesSection(), addAsChild()),
+                ZeroOrMore(Space()),
+                Optional(BodySection(), addAsChild()),
+                ZeroOrMore(Space()),
+                Optional(SchemaKeyword(), addAsChild()),
+                ZeroOrMore(Space())
+            ), Sequence(
+                Optional(CodeBlocks()),
+                ZeroOrMore(TestNot(CodeBlocks()), OneOrMore(Space()), Line(), NewLine()), setBody(),
+                Optional(CodeBlocks())
+            ))
         );
+    }
+
+    boolean aaa() {
+        pop();
+        return true;
     }
 
     Rule ResourceNamed() {
@@ -174,27 +198,37 @@ class Parser extends AbstractParser {
                     OneOrMore(Space()), URITemplateKeyword(), setField("template"), Ch(']')))),
 
             OneOrMore(
-                TestNot(FirstOf(ActionNamed(), ResourceNamed(), GroupNamed())),
+                TestNot(FirstOf(ActionNamed(), ResourceNamed(), GroupNamed(), ResponseSection())),
                 Any()),
-            setField("description", match().trim().replace("\n", " "))
+            setField("description", match().trim().replace("\n", " ")),
+
+            OneOrMore(
+                ZeroOrMore(EmptyLine()),
+                ResponseSection(),
+                addAsChild()),
+            ZeroOrMore(EmptyLine())
         );
     }
 
     //************* Response Section ****************
 
-    Rule ResponseSection() {
+    Rule ResponseNamed() {
         return Sequence(
-            ZeroOrMore(EmptyLine()),
-
-            null
-        );
+            String("Response"), ZeroOrMore(Space()),
+            OneOrMore(Digit()), ZeroOrMore(Space()),
+            Optional(Ch('('), OneOrMore(TestNot(Ch(')')), Any()), Ch(')')));
     }
 
-    Rule ResponseNamed() {
-        return PayloadSection(FirstOf(
-            HTTPMethodKeyword(),
-            null
-        ));
+    Rule ResponseSection() {
+        return PayloadSection(
+            Sequence(
+                Test(ResponseNamed()),
+                push(new ResponseSection()),
+                Sequence(
+                    String("Response"), ZeroOrMore(Space()),
+                    OneOrMore(Digit()), setField("httpStatusCode", Integer.parseInt(match().trim())), ZeroOrMore(Space()),
+                    Optional(Ch('('), OneOrMore(TestNot(Ch(')')), Any()), setField("mediaType"), Ch(')')))
+            ));
     }
 
     //************* Headers Section ****************
@@ -285,7 +319,7 @@ class Parser extends AbstractParser {
 
             EmptyLine(),
             Optional(CodeBlocks()),
-            OneOrMore(TestNot(CodeBlocks()), Line(), NewLine()), setBody(),
+            OneOrMore(TestNot(CodeBlocks()), OneOrMore(Space()), Line(), NewLine()), setBody(), debug("ASSERT"),
             Optional(CodeBlocks())
         );
     }
@@ -322,6 +356,7 @@ class Parser extends AbstractParser {
         return String("Body");
     }
 
+    @MemoMismatches
     Rule BodySection() {
         return AssertSection(BodyKeyword(), new BodySection());
     }

@@ -4,15 +4,12 @@ import lombok.Getter;
 import lombok.ToString;
 
 @ToString
-public class ResponseSection extends Section {
+public class ResponseSection extends PayloadSection {
 
     @Getter
     private Integer httpStatusCode;
 
     @Getter
     private String mediaType;
-
-    @Getter
-    private String payload;
 
 }
