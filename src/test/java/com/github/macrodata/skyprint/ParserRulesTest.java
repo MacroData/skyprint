@@ -3,6 +3,7 @@ package com.github.macrodata.skyprint;
 import com.github.macrodata.skyprint.section.GroupSection;
 import com.github.macrodata.skyprint.section.MetadataSection;
 import com.github.macrodata.skyprint.section.OverviewSection;
+import com.github.macrodata.skyprint.section.ResourceSection;
 import org.json.JSONException;
 import org.parboiled.Parboiled;
 import org.parboiled.support.ParsingResult;
@@ -63,6 +64,26 @@ public class ParserRulesTest {
         Assert.assertNotNull(section);
         JSONAssert.assertEquals(expected, TestHelper.toJson(section), true);
     }
+
+    @DataProvider
+    public Object[][] samplesResourceSection() {
+        return new Object[][]{
+            {"resource/simple"}
+        };
+    }
+
+    @Test(dataProvider = "samplesResourceSection")
+    public void testResourceSection(String resource) throws IOException, JSONException{
+        String sample = sample(resource + ".md");
+        String expected = expected(resource + ".json");
+
+        ParsingResult<?> result = TestHelper.parse(parser.ResourceSection(), sample);
+
+        ResourceSection section = (ResourceSection) result.resultValue;
+        Assert.assertNotNull(section);
+        JSONAssert.assertEquals(expected, TestHelper.toJson(section), true);
+    }
+
 
     @DataProvider
     public Object[][] samplesGroupSection() {

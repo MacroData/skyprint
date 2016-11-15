@@ -1,0 +1,20 @@
+{
+  "actions": [
+    {
+      "identifier": "Retrieve a Message",
+      "template": null,
+      "method": "GET",
+      "description": "This action has **two** responses defined"
+    },
+    {
+      "identifier": "Update a Message",
+      "template": null,
+      "method": "PUT",
+      "description": ""
+    }
+  ],
+  "identifier": "My Message",
+  "template": "/message",
+  "method": null,
+  "description": ""
+}
