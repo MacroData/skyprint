@@ -1,36 +1,21 @@
 package com.github.macrodata.skyprint;
 
-import com.github.macrodata.skyprint.section.RootSection;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.SerializationConfig;
-import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.json.JSONException;
-import org.parboiled.support.ParsingResult;
 import org.skyscreamer.jsonassert.JSONAssert;
+import org.testng.Assert;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
-import org.testng.annotations.Factory;
 import org.testng.annotations.Test;
 
-import java.io.*;
-import java.util.stream.Collectors;
+import java.io.IOException;
 
 public class SkyPrintProcessorTest {
 
-    private static final ObjectMapper JSON_MAPPER;
+    private SkyPrintProcessor processor;
 
-    static {
-        JSON_MAPPER = new ObjectMapper();
-        JSON_MAPPER.configure(SerializationConfig.Feature.WRITE_EMPTY_JSON_ARRAYS, false);
-        JSON_MAPPER.setSerializationInclusion(JsonSerialize.Inclusion.NON_NULL);
-    }
-
-    private final String apibResource;
-    private final String msonResource;
-
-    @Factory(dataProvider = "samples")
-    public SkyPrintProcessorTest(String resource) {
-        this.apibResource = "/apib/" + resource + ".md";
-        this.msonResource = "/mson/" + resource + ".json";
+    @BeforeClass
+    public void setUp() {
+        processor = new SkyPrintProcessor();
     }
 
     @DataProvider
@@ -54,35 +39,15 @@ public class SkyPrintProcessorTest {
         };
     }
 
-    @DataProvider
-    public Object[][] samplesMSON() {
-        return new Object[][]{
-            {resource(apibResource), resource(msonResource)}
-        };
-    }
+    @Test(dataProvider = "samples")
+    public void testParseToJson(String resource) throws IOException, JSONException {
+        final String apib = TestHelper.resource("/apib/" + resource + ".md");
+        final String json = TestHelper.resource("/json/" + resource + ".json");
 
-    @Test(dataProvider = "samplesMSON")
-    public void testParse(String apib, String mson) throws IOException, JSONException {
-        ParsingResult<RootSection> result = new SkyPrintProcessor().parse(apib.toCharArray());
+        String result = processor.parseToJson(apib);
 
-        String json = JSON_MAPPER.writerWithDefaultPrettyPrinter()
-            .writeValueAsString(result.resultValue);
-
-        JSONAssert.assertEquals(mson, json, true);
-    }
-
-    private static String resource(String resource) {
-        InputStream stream = Object.class.getResourceAsStream(resource);
-        if (stream == null) return "";
-        return new BufferedReader(new InputStreamReader(stream))
-            .lines()
-            .collect(Collectors.joining("\n"));
-    }
-
-    private static void save(File file, String content) throws IOException {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
-            writer.write(content);
-        }
+        Assert.assertNotNull(result);
+        JSONAssert.assertEquals(json, result, true);
     }
 
 }

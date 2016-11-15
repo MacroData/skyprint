@@ -1,17 +1,30 @@
 package com.github.macrodata.skyprint;
 
 import com.github.macrodata.skyprint.section.RootSection;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.map.SerializationConfig;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.parboiled.Parboiled;
 import org.parboiled.parserunners.ParseRunner;
 import org.parboiled.parserunners.ReportingParseRunner;
 import org.parboiled.support.ParsingResult;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.stream.Collectors;
 
 public class SkyPrintProcessor {
+
+    private static final ObjectMapper JSON_MAPPER;
+
+    static {
+        JSON_MAPPER = new ObjectMapper();
+        JSON_MAPPER.configure(SerializationConfig.Feature.WRITE_EMPTY_JSON_ARRAYS, false);
+        JSON_MAPPER.setSerializationInclusion(JsonSerialize.Inclusion.NON_NULL);
+        JSON_MAPPER.setSerializationInclusion(JsonSerialize.Inclusion.NON_EMPTY);
+    }
 
     private final Parser parser;
     private final ParseRunner<RootSection> runner;
@@ -47,6 +60,14 @@ public class SkyPrintProcessor {
 
     public ParsingResult<RootSection> parse(char[] source) {
         return runner.run(source);
+    }
+
+    public String parseToJson(String resource) throws IOException {
+        return apiBlueprintToJson(parseApiBlueprint(resource));
+    }
+
+    public static String apiBlueprintToJson(RootSection root) throws IOException {
+        return JSON_MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(root);
     }
 
 }
