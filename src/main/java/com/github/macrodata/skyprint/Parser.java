@@ -6,7 +6,6 @@ import org.parboiled.annotations.BuildParseTree;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.OptionalInt;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -22,6 +21,23 @@ class Parser extends AbstractParser {
             ZeroOrMore(ResourceSection(), addAsChild()),
             ZeroOrMore(GroupSection(), addAsChild())
         );
+    }
+
+    Rule MetadataSection() {
+        return Sequence(
+            push(new MetadataSection()),
+
+            Pair(
+                Sequence(String("FORMAT"), push()),
+                Sequence(MapValue(), push())),
+            addToMap(),
+
+            ZeroOrMore(
+                Test(Pair(MapKey(), MapValue())),
+                Pair(
+                    Sequence(MapKey(), push()),
+                    Sequence(MapValue(), push())),
+                addToMap()));
     }
 
     //************* Abstract Section ****************
@@ -68,34 +84,6 @@ class Parser extends AbstractParser {
         return OneOrMore(TestNot(FirstOf(AnyOf("[]()"), NewLine())), Any());
     }
 
-    //************* MetaData Section ****************
-
-    Rule MetadataSection() {
-        return Sequence(
-            push(new MetadataSection()),
-
-            Pair(String("FORMAT"), Line()), addPair(),
-
-            ZeroOrMore(
-                TestNot(EmptyLine()),
-                Pair(Key(), Line()), addPair()));
-    }
-
-    Rule Pair(Rule key, Rule value) {
-        return Sequence(key, Ch(':'), value, NewLine());
-    }
-
-    Rule Key() {
-        return OneOrMore(TestNot(Ch(':')), Any());
-    }
-
-    boolean addPair() {
-        Map<String, String> metadata = (Map<String, String>) pop();
-        String[] match = match().split(":", 2);
-        metadata.put(match[0].trim(), match[1].trim());
-        push((Section) metadata);
-        return true;
-    }
 
     //************* API name & Overview Section ****************
 
@@ -224,7 +212,7 @@ class Parser extends AbstractParser {
 
             ZeroOrMore(
                 TestNot(EmptyLine()),
-                Pair(Key(), Line()), addPair())
+                Pair(Sequence(MapKey(), push()), Sequence(MapValue(), push())), addToMap())
         );
     }
 
