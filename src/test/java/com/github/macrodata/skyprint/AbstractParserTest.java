@@ -49,7 +49,7 @@ public class AbstractParserTest {
 
     @Test(dataProvider = "samplesLine")
     public void testLine(String sample, String expected) {
-        String result = ParserHelper.match(parser.Line(), sample);
+        String result = TestHelper.match(parser.Line(), sample);
 
         Assert.assertEquals(result, expected);
     }
