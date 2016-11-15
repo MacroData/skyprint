@@ -1,9 +1,6 @@
 package com.github.macrodata.skyprint;
 
-import com.github.macrodata.skyprint.section.AssetSection;
-import com.github.macrodata.skyprint.section.AttributesSection;
-import com.github.macrodata.skyprint.section.MetadataSection;
-import com.github.macrodata.skyprint.section.OverviewSection;
+import com.github.macrodata.skyprint.section.*;
 import org.mockito.Mockito;
 import org.parboiled.Parboiled;
 import org.parboiled.Rule;
@@ -229,6 +226,46 @@ public class ParserTest {
             parser.AssertSection(parser.TestKeyword(), spyAssetSection), sample);
 
         AssetSection section = (AssetSection) result.resultValue;
+        Assert.assertNotNull(section);
+        Assert.assertEquals(section.getContent(), expected);
+    }
+
+    @DataProvider
+    public Object[][] sampleBodySection() {
+        return new Object[][]{
+            {"      + Body\n" +
+                "\n" +
+                "           {\n" +
+                "               \"message\": \"Hello\"\n" +
+                "           }\n", "{\n    \"message\": \"Hello\"\n}"}
+        };
+    }
+
+    @Test(dataProvider = "sampleBodySection")
+    public void testBodySection(String sample, String expected) {
+        ParsingResult<?> result = TestHelper.parse(parser.BodySection(), sample);
+
+        BodySection section = (BodySection) result.resultValue;
+        Assert.assertNotNull(section);
+        Assert.assertEquals(section.getContent(), expected);
+    }
+
+    @DataProvider
+    public Object[][] sampleSchemaSection() {
+        return new Object[][]{
+            {"      + Schema\n" +
+                "\n" +
+                "           {\n" +
+                "               \"message\": \"Hello\"\n" +
+                "           }\n", "{\n    \"message\": \"Hello\"\n}"}
+        };
+    }
+
+    @Test(dataProvider = "sampleSchemaSection")
+    public void testSchemaSection(String sample, String expected) {
+        ParsingResult<?> result = TestHelper.parse(parser.SchemaSection(), sample);
+
+        SchemaSection section = (SchemaSection) result.resultValue;
         Assert.assertNotNull(section);
         Assert.assertEquals(section.getContent(), expected);
     }

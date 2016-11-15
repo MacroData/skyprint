@@ -28,6 +28,7 @@ class Parser extends AbstractParser {
 
     Rule NamedSection(Rule body) {
         return Sequence(
+            ZeroOrMore(Space()),
             FirstOf(
                 FirstOf("######", "#####", "####", "###", "##", "#"),
                 FirstOf("++++++", "+++++", "++++", "+++", "++", "+")),
@@ -325,6 +326,26 @@ class Parser extends AbstractParser {
         if (firstNotSpace.isPresent())
             return str.indexOf(firstNotSpace.getAsInt());
         return 0;
+    }
+
+    //************* Body section ****************
+
+    Rule BodyKeyword() {
+        return String("Body");
+    }
+
+    Rule BodySection() {
+        return AssertSection(BodyKeyword(), new BodySection());
+    }
+
+    //************* Schema section ****************
+
+    Rule SchemaKeyword() {
+        return String("Schema");
+    }
+
+    Rule SchemaSection() {
+        return AssertSection(SchemaKeyword(), new SchemaSection());
     }
 
     //************* Keywords ****************
