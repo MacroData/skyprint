@@ -11,6 +11,9 @@ public class ActionSection extends Section {
     @Getter(lazy = true)
     private final List<ResponseSection> responses = lazy.list(ResponseSection.class);
 
+    @Getter(lazy = true)
+    private final List<RequestSection> requests = lazy.list(RequestSection.class);
+
     @Getter
     private String identifier;
 
