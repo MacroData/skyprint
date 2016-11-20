@@ -1,12 +1,34 @@
 {
   "actions": [
     {
+      "responses": [
+        {
+          "headers": null,
+          "attributes": null,
+          "body": "Hello World!",
+          "schema": null,
+          "httpStatusCode": 200,
+          "mediaType": "text/plain"
+        }
+      ],
+      "requests": [],
       "identifier": "Retrieve a Message",
       "template": null,
       "method": "GET",
-      "description": "This action has **two** responses defined"
+      "description": ""
     },
     {
+      "responses": [
+        {
+          "headers": null,
+          "attributes": null,
+          "body": "",
+          "schema": null,
+          "httpStatusCode": 204,
+          "mediaType": null
+        }
+      ],
+      "requests": [],
       "identifier": "Update a Message",
       "template": null,
       "method": "PUT",

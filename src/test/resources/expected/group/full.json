@@ -9,6 +9,17 @@
       "description": "",
       "actions": [
         {
+          "responses": [
+            {
+              "headers": null,
+              "attributes": null,
+              "body": "",
+              "schema": null,
+              "httpStatusCode": 200,
+              "mediaType": "text/plain"
+            }
+          ],
+          "requests": [],
           "identifier": "Retrieve a Message",
           "template": null,
           "method": "GET",

@@ -1,8 +1,13 @@
 ## My Message [/message]
 
 ### Retrieve a Message [GET]
-This action has **two** responses defined
+
++ Response 200 (text/plain)
+
+        Hello World!
 
 ### Update a Message [PUT]
+
++ Response 204
 
 

@@ -72,7 +72,7 @@ public class ParserRulesTest {
         };
     }
 
-    @Test(dataProvider = "samplesResourceSection", enabled = false)
+    @Test(dataProvider = "samplesResourceSection")
     public void testResourceSection(String resource) throws IOException, JSONException{
         String sample = sample(resource + ".md");
         String expected = expected(resource + ".json");
@@ -94,7 +94,7 @@ public class ParserRulesTest {
         };
     }
 
-    @Test(dataProvider = "samplesGroupSection", enabled = false)
+    @Test(dataProvider = "samplesGroupSection")
     public void testGroupSection(String resource) throws IOException, JSONException{
         String sample = sample(resource + ".md");
         String expected = expected(resource + ".json");
