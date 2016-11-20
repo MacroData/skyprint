@@ -3,15 +3,15 @@ package com.github.macrodata.skyprint;
 import com.github.macrodata.skyprint.section.*;
 import org.parboiled.Rule;
 import org.parboiled.annotations.BuildParseTree;
-import org.parboiled.annotations.Cached;
-import org.parboiled.annotations.Label;
-import org.parboiled.annotations.MemoMismatches;
 
+import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
 import java.util.OptionalInt;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 @BuildParseTree
 class Parser extends AbstractParser {
@@ -74,7 +74,7 @@ class Parser extends AbstractParser {
                 ZeroOrMore(Space())
             ), Sequence(
                 Optional(CodeBlocks()),
-                ZeroOrMore(TestNot(CodeBlocks()), OneOrMore(Space()), Line(), NewLine()), setBody(),
+                ZeroOrMore(TestNot(CodeBlocks()), OneOrMore(Space()), Line(), NewLine()), setBodyPayload(),
                 Optional(CodeBlocks())
             ))
         );
@@ -168,14 +168,25 @@ class Parser extends AbstractParser {
                     Ch('['), HTTPMethodKeyword(), setField("method"),
                     OneOrMore(Space()), URITemplateKeyword(), setField("template"), Ch(']')))),
 
-            OneOrMore(
-                TestNot(FirstOf(ResourceNamed(), GroupNamed(), ActionNamed())),
+            ZeroOrMore(
+                TestNot(FirstOf(ResourceNamed(), GroupNamed(), ActionNamed(), NamedSection(ResponseNamed()))),
                 Any()),
             setField("description", match().trim().replace("\n", " ")),
 
-            ZeroOrMore(
-                Sequence(ActionSection(), addAsChild()))
+            FirstOf(
+                OneOrMore(Sequence(ActionSection(), addAsChild())),
+                Sequence(ResponseSection(), addAction())
+            )
         );
+    }
+
+    boolean addAction() {
+        ActionSection action = new ActionSection();
+        ResponseSection response = (ResponseSection) pop();
+        action.setChildren(Arrays.asList(response));
+        push(action);
+        addAsChild();
+        return true;
     }
 
     //************* Action section ****************
@@ -319,13 +330,33 @@ class Parser extends AbstractParser {
 
             EmptyLine(),
             Optional(CodeBlocks()),
-            OneOrMore(TestNot(CodeBlocks()), OneOrMore(Space()), Line(), NewLine()), setBody(), debug("ASSERT"),
+            OneOrMore(TestNot(CodeBlocks()), OneOrMore(Space()), Line(), NewLine()), setBody(),
             Optional(CodeBlocks())
         );
     }
 
     Rule CodeBlocks() {
         return Sequence(OneOrMore(Space()), String("```"), NewLine());
+    }
+
+    boolean setBodyPayload() {
+        PayloadSection section = (PayloadSection) pop();
+        String match = match();
+        String[] split = match.split("\n");
+        int i = sizeWhitespace(split[0]);
+        String collect = Stream.of(split)
+            .map(s -> s.substring(i, s.length()))
+            .collect(Collectors.joining("\n"));
+        try {
+            Field body = PayloadSection.class.getDeclaredField("body");
+            body.setAccessible(true);
+            AtomicReference<String> o = (AtomicReference<String>) body.get(section);
+            o.set(collect);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+        push(section);
+        return true;
     }
 
     boolean setBody() {
@@ -336,8 +367,9 @@ class Parser extends AbstractParser {
         String collect = Stream.of(split)
             .map(s -> s.substring(i, s.length()))
             .collect(Collectors.joining("\n"));
-        section.setContent(collect);
-        push(section);
+        AssetSection clone = section.clone();
+        clone.setContent(collect);
+        push(clone);
         return true;
     }
 
@@ -356,9 +388,12 @@ class Parser extends AbstractParser {
         return String("Body");
     }
 
-    @MemoMismatches
     Rule BodySection() {
         return AssertSection(BodyKeyword(), new BodySection());
+    }
+
+    List stack() {
+        return StreamSupport.stream(getContext().getValueStack().spliterator(), false).collect(Collectors.toList());
     }
 
     //************* Schema section ****************

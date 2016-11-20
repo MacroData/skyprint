@@ -8,7 +8,7 @@
     "resources" : [ {
       "actions" : [ {
         "responses" : [ {
-          "content" : "+ Attributes (object)\n    + id: 250FF (string, required)\n    + created: 1415203908 (number) - Time stamp\n    + percent_off: 25 (number)",
+          "body": "+ Attributes (object)\n    + id: 250FF (string, required)\n    + created: 1415203908 (number) - Time stamp\n    + percent_off: 25 (number)",
           "httpStatusCode" : 200,
           "mediaType" : "application/json"
         } ],

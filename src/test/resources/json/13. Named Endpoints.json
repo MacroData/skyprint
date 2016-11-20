@@ -9,19 +9,34 @@
       "actions" : [ {
         "responses" : [ {
           "headers" : {
-            "Location" : "/tasks/1992"
+            "Location": "/messages/1337"
           },
           "httpStatusCode" : 201
-        } ],
-        "identifier" : "Create a new task",
-        "template" : "/tasks",
-        "method" : "POST",
-        "description" : "Now create a task that you need to do at a later date.  + Request (application/json)          {             \"name\": \"Exercise in gym\",             \"done\": false,             \"type\": \"task\"         }"
+        }
+        ]
       } ],
       "identifier" : "Create message",
       "template" : "/messages",
       "method" : "POST",
-      "description" : "Start out by creating a message for the world to see.  + Request (application/json)          { \"message\": \"Hello World!\" }  + Response 201      + Headers              Location: /messages/1337"
+      "description": "Start out by creating a message for the world to see.  + Request (application/json)          { \"message\": \"Hello World!\" }"
+    },
+      {
+        "actions": [
+          {
+            "responses": [
+              {
+                "headers": {
+                  "Location": "/tasks/1992"
+                },
+                "httpStatusCode": 201
+              }
+            ]
+          }
+        ],
+        "identifier": "Create a new task",
+        "template": "/tasks",
+        "method": "POST",
+        "description": "Now create a task that you need to do at a later date.  + Request (application/json)          {             \"name\": \"Exercise in gym\",             \"done\": false,             \"type\": \"task\"         }"
     } ],
     "identifier" : "Quick start"
   } ]

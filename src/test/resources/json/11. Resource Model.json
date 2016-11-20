@@ -8,7 +8,7 @@
     "resources" : [ {
       "actions" : [ {
         "responses" : [ {
-          "content" : "[My Message][]",
+          "body" : "[My Message][]",
           "httpStatusCode" : 200
         } ],
         "identifier" : "Retrieve a Message",

@@ -8,7 +8,7 @@
     "resources" : [ {
       "actions" : [ {
         "responses" : [ {
-          "content" : "+ Attributes (Coupon)",
+          "body" : "+ Attributes (Coupon)",
           "httpStatusCode" : 200,
           "mediaType" : "application/json"
         } ],
@@ -22,7 +22,7 @@
     }, {
       "actions" : [ {
         "responses" : [ {
-          "content" : "+ Attributes (Coupons)",
+          "body" : "+ Attributes (Coupons)",
           "httpStatusCode" : 200,
           "mediaType" : "application/json"
         } ],
@@ -31,7 +31,7 @@
         "description" : "Returns a list of your coupons.  + Parameters     + limit (number, optional)          A limit on the number of objects to be returned. Limit can range         between 1 and 100 items.          + Default: `10`"
       }, {
         "responses" : [ {
-          "content" : "+ Attributes (Coupon)",
+          "body" : "+ Attributes (Coupon)",
           "httpStatusCode" : 200,
           "mediaType" : "application/json"
         } ],

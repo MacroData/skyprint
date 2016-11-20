@@ -15,16 +15,16 @@
                   "headers": {
                     "X-My-Message-Header": "42"
                   },
-                  "body": "{ \"message\": \"Hello World!\" }",
+                  "body": "Hello World!",
                   "httpStatusCode": 200,
                   "mediaType": "text/plain"
                 },
                 {
                   "headers": {
-                    "X-My-Message-Header": "42"
+                    "X-My-Message-Header": "43"
                   },
                   "body": "{ \"message\": \"Hello World!\" }",
-                  "httpStatusCode": 200,
+                  "httpStatusCode": 201,
                   "mediaType": "application/json"
                 }
               ],

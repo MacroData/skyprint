@@ -7,7 +7,7 @@
   "resources" : [ {
     "actions" : [ {
       "responses" : [ {
-        "content" : "[\n    {\n        \"id\": 123,\n        \"name\": \"Exercise in gym\",\n        \"done\": false,\n        \"type\": \"task\"\n    },\n    {\n        \"id\": 124,\n        \"name\": \"Shop for groceries\",\n        \"done\": true,\n        \"type\": \"task\"\n    }\n]",
+        "body" : "[\n    {\n        \"id\": 123,\n        \"name\": \"Exercise in gym\",\n        \"done\": false,\n        \"type\": \"task\"\n    },\n    {\n        \"id\": 124,\n        \"name\": \"Shop for groceries\",\n        \"done\": true,\n        \"type\": \"task\"\n    }\n]",
         "httpStatusCode" : 200,
         "mediaType" : "application/json"
       } ],
@@ -15,7 +15,7 @@
       "method" : "GET"
     }, {
       "responses" : [ {
-        "content" : "{\n    \"id\": 123,\n    \"name\": \"Go to gym\",\n    \"done\": false,\n    \"type\": \"task\"\n}",
+        "body" : "{\n    \"id\": 123,\n    \"name\": \"Go to gym\",\n    \"done\": false,\n    \"type\": \"task\"\n}",
         "httpStatusCode" : 200,
         "mediaType" : "application/json"
       } ],
