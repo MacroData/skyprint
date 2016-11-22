@@ -3,26 +3,37 @@
     "FORMAT" : "1A"
   },
   "name" : "Advanced Action API",
-  "description": "A resource action is – in fact – a state transition. This API example demonstrates an action - state transition - to another resource.  ## API Blueprint + [Previous: Resource Model](11.%20Resource%20Model.md) + [This: Raw API Blueprint](https://raw.github.com/apiaryio/api-blueprint/master/examples/12.%20Advanced%20Action.md) + [Next: Named Endpoints](13.%20Named%20Endpoints.md)",
+  "description" : "A resource action is – in fact – a state transition. This API example demonstrates an action - state transition - to another resource.  ## API Blueprint + [Previous: Resource Model](11.%20Resource%20Model.md) + [This: Raw API Blueprint](https://raw.github.com/apiaryio/api-blueprint/master/examples/12.%20Advanced%20Action.md) + [Next: Named Endpoints](13.%20Named%20Endpoints.md)",
   "resources" : [ {
     "actions" : [ {
+      "responses" : [ {
+        "body" : "[\n    {\n        \"id\": 123,\n        \"name\": \"Exercise in gym\",\n        \"done\": false,\n        \"type\": \"task\"\n    },\n    {\n        \"id\": 124,\n        \"name\": \"Shop for groceries\",\n        \"done\": true,\n        \"type\": \"task\"\n    }\n]",
+        "httpStatusCode" : 200,
+        "mediaType" : "application/json"
+      } ],
       "identifier" : "List All Tasks",
-      "method": "GET",
-      "description": "+ Response 200 (application/json)          [             {                 \"id\": 123,                 \"name\": \"Exercise in gym\",                 \"done\": false,                 \"type\": \"task\"             },             {                 \"id\": 124,                 \"name\": \"Shop for groceries\",                 \"done\": true,                 \"type\": \"task\"             }         ]"
+      "method" : "GET"
     }, {
+      "responses" : [ {
+        "body" : "{\n    \"id\": 123,\n    \"name\": \"Go to gym\",\n    \"done\": false,\n    \"type\": \"task\"\n}",
+        "httpStatusCode" : 200,
+        "mediaType" : "application/json"
+      } ],
       "identifier" : "Retrieve Task",
       "template" : "/task/{id}",
-      "method": "GET",
-      "description": "This is a state transition to another resource.  + Parameters     + id (string)  + Response 200 (application/json)          {             \"id\": 123,             \"name\": \"Go to gym\",             \"done\": false,             \"type\": \"task\"         }"
+      "method" : "GET",
+      "description" : "This is a state transition to another resource.  + Parameters     + id (string)"
     }, {
+      "responses" : [ {
+        "httpStatusCode" : 204
+      } ],
       "identifier" : "Delete Task",
       "template" : "/task/{id}",
-      "method": "DELETE",
-      "description": "+ Parameters     + id (string)  + Response 204"
-    }
-    ],
-    "identifier": "Tasks",
-    "template": "/tasks/tasks{?status,priority}",
-    "description": "+ Parameters     + status (string)     + priority (number)"
+      "method" : "DELETE",
+      "description" : "+ Parameters     + id (string)"
+    } ],
+    "identifier" : "Tasks",
+    "template" : "/tasks/tasks{?status,priority}",
+    "description" : "+ Parameters     + status (string)     + priority (number)"
   } ]
 }

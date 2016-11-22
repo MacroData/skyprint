@@ -51,7 +51,7 @@ public class SkyPrintProcessor {
     }
 
     public RootSection parseApiBlueprint(String source) {
-        return parseApiBlueprint(source.toCharArray());
+        return parseApiBlueprint((source + "\n").toCharArray());    //TODO: fix bug with incorrect read last empty line
     }
 
     public RootSection parseApiBlueprint(char[] source) {

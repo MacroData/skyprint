@@ -53,11 +53,11 @@ class AbstractParser extends BaseParser<Object> {
         return setField(peek().getClass(), fieldName, match().trim());
     }
 
-    boolean setField(String fieldName, String value) {
+    boolean setField(String fieldName, Object value) {
         return setField(peek().getClass(), fieldName, value);
     }
 
-    boolean setField(Class cls, String fieldName, String value) {
+    boolean setField(Class cls, String fieldName, Object value) {
         final Object obj = peek();
         try {
             Field field = cls.getDeclaredField(fieldName);
