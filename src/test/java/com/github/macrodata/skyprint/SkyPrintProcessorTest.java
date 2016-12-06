@@ -36,7 +36,7 @@ public class SkyPrintProcessorTest {
             {"12. Advanced Action"},
             {"13. Named Endpoints"},
             {"14. JSON Schema"},
-            {"15. Advanced JSON Schema"}
+            {"15. Advanced JSON Schema"},
         };
     }
 
@@ -47,6 +47,7 @@ public class SkyPrintProcessorTest {
 
         String result = processor.parseToJson(apib);
 
+        System.out.println(result);
         Assert.assertNotNull(result);
         JSONAssert.assertEquals(json, result, true);
     }

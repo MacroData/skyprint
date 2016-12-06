@@ -21,14 +21,19 @@
               "method": "GET"
             },
             {
+              "requests": [
+                {
+                  "body": "All your base are belong to us.",
+                  "mediaType": "text/plain"
+                }
+              ],
               "responses": [
                 {
                   "httpStatusCode": 204
                 }
               ],
               "identifier": "Update a Message",
-              "method": "PUT",
-              "description": "+ Request (text/plain)          All your base are belong to us."
+              "method": "PUT"
             }
           ],
           "identifier": "My Message",

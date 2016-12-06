@@ -15,12 +15,23 @@
         "method" : "GET",
         "description" : "At this point we will utilize our `Message` resource model and reference it in `Response 200`."
       }, {
+        "requests": [
+          {
+            "body": "All your base are belong to us.",
+            "identifier": "Update Plain Text Message",
+            "mediaType": "text/plain"
+          },
+          {
+            "body": "{ \"message\": \"All your base are belong to us.\" }",
+            "identifier": "Update JSON Message",
+            "mediaType": "application/json"
+          }
+        ],
         "responses" : [ {
           "httpStatusCode" : 204
         } ],
         "identifier" : "Update a Message",
-        "method" : "PUT",
-        "description" : "+ Request Update Plain Text Message (text/plain)          All your base are belong to us.  + Request Update JSON Message (application/json)          { \"message\": \"All your base are belong to us.\" }"
+        "method": "PUT"
       } ],
       "identifier" : "My Message",
       "template" : "/message",

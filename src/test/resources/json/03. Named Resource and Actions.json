@@ -20,6 +20,12 @@
           "description": "Now this is informative! No extra explanation needed here. This action clearly retrieves the message."
         },
         {
+          "requests": [
+            {
+              "body": "All your base are belong to us.",
+              "mediaType": "text/plain"
+            }
+          ],
           "responses": [
             {
               "httpStatusCode": 204
@@ -27,7 +33,7 @@
           ],
           "identifier": "Update a Message",
           "method": "PUT",
-          "description": "`Update a message` - nice and simple naming is the best way to go.  + Request (text/plain)          All your base are belong to us."
+          "description": "`Update a message` - nice and simple naming is the best way to go."
         }
       ],
       "identifier": "My Message",

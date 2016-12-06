@@ -209,9 +209,15 @@ class Parser extends AbstractParser {
                     OneOrMore(Space()), URITemplateKeyword(), setField("template"), Ch(']')))),
 
             OneOrMore(
-                TestNot(FirstOf(ActionNamed(), ResourceNamed(), GroupNamed(), ResponseSection())),
+                TestNot(FirstOf(ActionNamed(), ResourceNamed(), GroupNamed(), ResponseSection(), RequestSection())),
                 Any()),
             setField("description", match().trim().replace("\n", " ")),
+
+
+            ZeroOrMore(
+                ZeroOrMore(EmptyLine()),
+                RequestSection(),
+                addAsChild()),
 
             OneOrMore(
                 ZeroOrMore(EmptyLine()),
@@ -238,6 +244,27 @@ class Parser extends AbstractParser {
                 Sequence(
                     String("Response"), ZeroOrMore(Space()),
                     OneOrMore(Digit()), setField("httpStatusCode", Integer.parseInt(match().trim())), ZeroOrMore(Space()),
+                    Optional(Ch('('), OneOrMore(TestNot(Ch(')')), Any()), setField("mediaType"), Ch(')')))
+            ));
+    }
+
+
+    Rule RequestNamed() {
+        return Sequence(
+            String("Request"), ZeroOrMore(Space()),
+            ZeroOrMore(TestNot(Ch('(')), Any()), ZeroOrMore(Space()),
+            Optional(Ch('('), OneOrMore(TestNot(Ch(')')), Any()), Ch(')')));
+    }
+
+    Rule RequestSection() {
+        return PayloadSection(
+            Sequence(
+//                debug("---------"),
+                Test(RequestNamed()),
+                push(new RequestSection()),
+                Sequence(
+                    String("Request"), ZeroOrMore(Space()),
+                    Optional(ZeroOrMore(TestNot(Ch('(')), Any()), setField("identifier")), ZeroOrMore(Space()),
                     Optional(Ch('('), OneOrMore(TestNot(Ch(')')), Any()), setField("mediaType"), Ch(')')))
             ));
     }
